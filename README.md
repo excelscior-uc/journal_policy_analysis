@@ -1,8 +1,8 @@
-### Did journal policies reduce the use of bar graphs for visualizing continuous data? An observational study
+## Did journal policies reduce the use of bar graphs for visualizing continuous data? An observational study
 
 An observational study of the effect of journal editorial policies on the inappropriate use of bar graphs for displaying continuous data, using Bayesian hierarchical Poisson models fit with the **nimble** package.
 
-#### Quick start
+### Quick start
 
 - Clone the repo and create the `data/`, `scripts/`, `results/`, and `diagnostics/` folders locally.
 - Open the project as an RStudio Project (required for the **here** package to resolve paths correctly, and so that the working directory is the repo root).
@@ -11,7 +11,7 @@ An observational study of the effect of journal editorial policies on the inappr
 - **Data:** the pipeline starts from the prepared datasets, so `data/` must already contain `df_descriptive.csv` (read by script 2) and `df_sample.csv` (read by scripts 3 and 6 and by `99_functions.R`).
 - Scripts 4 and 5 build the model labels from `mcmc_niter`, which is defined in `3__models.R` (and `6__sensitivity.R`) but not in `99_functions.R`. Run them in the same R session as script 3.
 
-#### Repository structure
+### Repository structure
 
 ```
 .
@@ -21,7 +21,7 @@ An observational study of the effect of journal editorial policies on the inappr
 └── diagnostics/   # MCMC diagnostics (trace/density/ACF PDFs, DIC summaries)
 ```
 
-#### Pipeline overview
+### Pipeline overview
 
 Scripts are numbered and must be run in order, since each step reads files written by the previous one. All scripts use the **here** package for path handling, so the project should be opened as an RStudio Project (or `here::here()` should resolve to the repo root).
 
@@ -34,7 +34,7 @@ Scripts are numbered and must be run in order, since each step reads files writt
 | 6 | `6__sensitivity.R` | Sensitivity analyses: refits models 1A–6 for the secondary outcome (number of more informative graphs) and runs their summaries, diagnostics, DIC table and forest plot; also builds the cumulative rate-ratio plot. |
 | — | `99_functions.R` | Shared helper functions (model runner, summaries, diagnostics, DIC). Sourced by scripts 3–6. |
 
-# 0. Installing packages
+### 0. Installing packages
 
 ```{r install-packages, eval=FALSE}
 install.packages(c(
@@ -44,7 +44,7 @@ install.packages(c(
 ))
 ```
 
-# 1. Input data
+### 1. Input data
 
 - `df_descriptive.csv`
 - `df_sample.csv`
