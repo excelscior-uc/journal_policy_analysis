@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "Please cite this research code as follows."
+title: "Did journal policies reduce the use of bar graphs for visualizing continuous data? An observational study: Code and data"
+authors:
+  - family-names: "Deressa"
+    given-names: "Teshome K."
+version: 1.0.0
+date-released: "2026-10-13"
+license: "MIT"
+repository-code: "https://github.com/teshomey/journal_policy"
