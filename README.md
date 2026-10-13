@@ -1,9 +1,5 @@
 ### Did journal policies reduce the use of bar graphs for visualizing continuous data? An observational study
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
-```
-
 An observational study of the effect of journal editorial policies on the inappropriate use of bar graphs for displaying continuous data, using Bayesian hierarchical Poisson models fit with the **nimble** package.
 
 #### Quick start
