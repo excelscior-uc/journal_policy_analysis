@@ -49,18 +49,18 @@ install.packages(c(
 - `df_descriptive.csv`
 - `df_sample.csv`
 
-# 2. `2__descriptives.R`
+### 2. `2__descriptives.R`
 
 Reads `data/df_descriptive.csv`, recodes field names for publication, and produces descriptive summaries and plots. Journal-sample counts, policy-adoption, and follow-up summaries.
 
-### Outputs written to `results/`
+#### Outputs written to `results/`
 
 - `summary_table.csv` — overall and by-policy-group counts/percentages of bar-only, informative-only, both, and excluded articles.
 - `policy_timeline_plot.png` — timeline of journal policy adoption patterns.
 - `stacked_by_field.png` — horizontal stacked bar chart of graph-type usage by field.
 - `policy_by_year.png` / `nonpolicy_by_year.png` — temporal trend plots of graph-type proportions by field, faceted for policy vs. non-policy journals, with policy-adoption year markers.
 
-# 3. `3__models.R`
+### 3. `3__models.R`
 
 Fits seven Bayesian hierarchical Poisson models to the primary outcome, reading `data/df_sample.csv`. Uses **nimble** with 4 parallel MCMC chains (60,000 iterations, 10,000 burn-in, thinning of 10).
 
@@ -74,14 +74,14 @@ Fits seven Bayesian hierarchical Poisson models to the primary outcome, reading 
 | 5 | Gradual policy effect + journal-specific time trends |
 | 6 | Gradual policy effect + field hierarchy + journal-specific time trends |
 
-### Outputs written to `results/`
+#### Outputs written to `results/`
 
 - `samples_<label>.rds` — per-chain posterior samples and WAIC for each model.
 - `mcmc_list_<label>.rds` — the same samples as a coda `mcmc.list`.
 
 Labels follow the pattern `model1a_pois_60k`, `model1b_pois_60k`, `model2_pois_60k`, …, `model6_pois_60k` (the number is `mcmc_niter` in thousands). Models are fitted through `build_and_run_pois()` in `99_functions.R`: one chain per core (up to `detectCores() − 2`; any remaining chains queue), with fixed seeds 20260216–20260219. Run times recorded in the script comments are roughly 10–19 hours for Models 1B, 2, 3 and 6, and under half an hour for Models 1A, 4 and 5.
 
-# 4. `4__results.R`
+### 4. `4__results.R`
 
 Loads the fitted model objects from `results/` and produces final summary tables and comparison figures for the primary outcome. Requires `mcmc_niter` to be defined (see [Quick start](#quick-start)).
 
@@ -89,7 +89,7 @@ Loads the fitted model objects from `results/` and produces final summary tables
 - Builds a forest plot of time and policy rate ratios across all models, ordered by DIC, for the primary outcome → `results/forest_plot_all_models_bar.png` (requires `results/dic_comparison_bar.csv` from script 5).
 - The cumulative rate-ratio plot and the secondary-outcome forest plot are not produced here; both are built in `6__sensitivity.R` (see [section 6](#6-6__sensitivityr)).
 
-# 5. `5__diagnostics.R`
+### 5. `5__diagnostics.R`
 
 For each of the 7 primary-outcome models, loads the MCMC/sample objects from `results/` (`mcmc_niter` must be defined — see [Quick start](#quick-start)) and:
 
@@ -98,13 +98,13 @@ For each of the 7 primary-outcome models, loads the MCMC/sample objects from `re
 - Computes DIC (`compute_dic()`; deviance information criterion, with model-specific log-likelihood functions for the non-nested, 3-level nested, and field-hierarchy model structures) → `results/dic_<label>.rds` and `diagnostics/dic_<label>.txt`.
 - Collates all saved DIC results with `build_dic_table()`, ranked by DIC with ΔDIC → `results/dic_comparison_bar.csv` (the input to the forest plot in script 4).
 
-# 6. `6__sensitivity.R`
+### 6. `6__sensitivity.R`
 
-### Secondary-outcome models
+#### Secondary-outcome models
 
 Refits the same 7 model structures as `3__models.R`, but with `n_info` (more informative graph counts) as the outcome instead of `n_bar`. Labels are suffixed `_info_pois_60k` (e.g., `model1a_info_pois_60k`) and outputs follow the same pattern as script 3 (`results/samples_<label>.rds`, `results/mcmc_list_<label>.rds`). The script then runs the rest of the secondary-outcome workflow itself, so there is no need to loop back through scripts 4 and 5.
 
-### Results, diagnostics and forest plot (secondary outcome)
+#### Results, diagnostics and forest plot (secondary outcome)
 
 - **Results:** `summarise_model()` for each model → `results/summary_<label>.csv`.
 - **Diagnostics:** trace, density and ACF plots and DIC for each model (same functions as script 5) → `diagnostics/`, then `build_dic_table()` → `results/dic_comparison_info.csv`.
@@ -112,6 +112,6 @@ Refits the same 7 model structures as `3__models.R`, but with `n_info` (more inf
 
 Before running the diagnostics section, edit `99_functions.R`: uncomment the secondary-outcome lines (`base_data` with `y = n_info`, and the `dic_comparison_info.csv` `write_csv`/`message` lines in `build_dic_table()`) and comment out their primary-outcome counterparts. Revert these before re-running scripts 3–5. Note that `build_dic_table()` collects every `dic_*.rds` file in `results/`, so the info table will also list the primary-outcome models; the forest-plot code keeps only the `_info_` models.
 
-### Cumulative rate-ratio plot
+#### Cumulative rate-ratio plot
 
 Builds cumulative rate-ratio curves for the 7 primary-outcome models over −3 to +3 years relative to policy adoption, using the joint posterior draws of the time (`beta`) and policy (`gamma`) effects. Step-change models (1A–3) are drawn solid and gradual-change models (4–6) dashed → `results/cumulative_rr_policy_event_time_joint.png`.
