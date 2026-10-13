@@ -1,16 +1,4 @@
----
-title: "Did journal policies reduce the use of bar graphs for visualizing continuous data? An observational study"
-output:
-  html_document:
-    toc: true
-    toc_depth: 3
-    toc_float: true
-    theme: flatly
-    highlight: tango
-  github_document:
-    toc: true
-    toc_depth: 3
----
+## Did journal policies reduce the use of bar graphs for visualizing continuous data? An observational study
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
@@ -18,7 +6,7 @@ knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 
 An observational study of the effect of journal editorial policies on the inappropriate use of bar graphs for displaying continuous data, using Bayesian hierarchical Poisson models fit with the **nimble** package.
 
-# Quick start
+### Quick start
 
 - Clone the repo and create the `data/`, `scripts/`, `results/`, and `diagnostics/` folders locally.
 - Open the project as an RStudio Project (required for the **here** package to resolve paths correctly, and so that the working directory is the repo root).
