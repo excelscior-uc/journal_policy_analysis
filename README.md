@@ -8,7 +8,7 @@ An observational study of the effect of journal editorial policies on the inappr
 - Open the project as an RStudio Project (required for the **here** package to resolve paths correctly, and so that the working directory is the repo root).
 - Install the required R packages (see [0. Installing packages](#0-installing-packages) below). Developed and tested under R 4.5.1.
 - Run scripts 2–6 in `scripts/` in order (see [Pipeline overview](#pipeline-overview) below). Script 6 contains the whole secondary-outcome workflow as well as the cumulative rate-ratio plot, so there is no loop back through scripts 4 and 5.
-- **Data:** the pipeline starts from the prepared datasets, so `data/` must already contain `df_descriptive.csv` (read by script 2) and `df_sample.csv` (read by scripts 3 and 6 and by `99_functions.R`).
+- The pipeline starts from the prepared datasets, so `data/` must already contain `df_descriptive.csv` (read by script 2) and `df_sample.csv` (read by scripts 3 and 6 and by `99_functions.R`).
 - Scripts 4 and 5 build the model labels from `mcmc_niter`, which is defined in `3__models.R` (and `6__sensitivity.R`) but not in `99_functions.R`. Run them in the same R session as script 3.
 
 ### Repository structure
