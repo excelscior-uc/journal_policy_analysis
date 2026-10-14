@@ -38,7 +38,7 @@ Scripts are numbered and must be run in order, since each step reads files writt
 
 ```{r install-packages, eval=FALSE}
 install.packages(c("nimble", "coda", "dplyr", "tidyr", "tidyverse", "ggplot2", "readr", "purrr", "stringr", "scales", "here",
-                    "openxlsx", "ggh4x", "patchwork", "fs"))
+                    "openxlsx", "ggh4x", "patchwork", "fs", "viridis"))
 ```
 
 ### 1. Input data
