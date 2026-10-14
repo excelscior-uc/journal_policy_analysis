@@ -1,4 +1,4 @@
-## Did journal policies reduce the use of bar graphs for visualizing continuous data? An observational study
+## Do journal policies reduce the use of bar graphs for visualizing continuous data? An observational study
 
 An observational study of the effect of journal editorial policies on the inappropriate use of bar graphs for displaying continuous data, using Bayesian hierarchical Poisson models fit with the **nimble** package.
 
