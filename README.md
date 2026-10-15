@@ -1,11 +1,11 @@
 
 # Do journal policies reduce the use of bar graphs for visualizing continuous data? An observational study
 
-First Author¹, Second Author², Third Author¹˒³, First Author¹, Second Author², Third Author¹˒³, First Author¹, Second Author², Third Author¹˒³
+	Robert Schulz¹, Teshome K. Deressa²˒³, Third Author¹˒³, First Author¹, Second Author², Third Author¹˒³, First Author¹, Second Author², Third Author¹˒³
 
-¹ Department/Research Group, Institution Name, City, Country  
-² Department/Research Group, Institution Name, City, Country  
-³ Department/Research Group, Institution Name, City, Country
+¹ Berlin Institute of Health at Charite´- Universitätsmedizin Berlin, QUEST Center for Responsible Research, Berlin, Germany  
+² CIBB, Center for Innovative Biomedicine and Biotechnology, University of Coimbra, Coimbra, Portugal  
+³ CNC-UC, Center for Neuroscience and Cell Biology, University of Coimbra, Coimbra, Portugal
 
 ---
 
