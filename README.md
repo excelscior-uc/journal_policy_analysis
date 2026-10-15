@@ -48,11 +48,8 @@ Scripts are numbered and must be run in order, since each step reads files writt
 ### 0. Installing packages
 
 ```r
-install.packages(c(
-  "nimble", "coda", "posterior", "dplyr", "tidyr", "tidyverse",
-  "ggplot2", "readr", "purrr", "stringr", "scales", "here",
-  "openxlsx", "ggh4x", "patchwork", "fs", "viridis"
-))
+install.packages(c("nimble", "coda", "posterior", "dplyr", "tidyr", "tidyverse", "ggplot2", "readr", "purrr", "stringr", "scales",
+                    "here", "openxlsx", "ggh4x", "patchwork", "fs", "viridis"))
 ```
 
 ### 1. Input data
