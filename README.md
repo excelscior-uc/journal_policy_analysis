@@ -1,19 +1,7 @@
 
 # Do journal policies reduce the use of bar graphs for visualizing continuous data? An observational study
 
-## Authors and affiliations
-
-1. First Author¹
-2. Second Author²
-3. Third Author¹˒³
-4. First Author¹
-5. Second Author²
-6. Third Author¹˒³
-7. First Author¹
-8. Second Author²
-9. Third Author¹˒³
-
-**Affiliations**
+First Author¹, Second Author², Third Author¹˒³, First Author¹, Second Author², Third Author¹˒³, First Author¹, Second Author², Third Author¹˒³
 
 ¹ Department/Research Group, Institution Name, City, Country  
 ² Department/Research Group, Institution Name, City, Country  
