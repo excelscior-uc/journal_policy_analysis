@@ -98,7 +98,7 @@ Run times recorded in the script comments are roughly 10–19 hours for Models 1
 Loads the fitted model objects from `results/` and produces final summary tables and comparison figures for the primary outcome. Requires `mcmc_niter` to be defined (see [Quick start](#quick-start)).
 
 - Calls `summarise_model()` for each of the 7 models (posterior mean, SD, 95% credible interval, ESS and \(\hat{R}\) for key parameters) → `results/summary_<model_label>.csv`.
-- Builds a forest plot of time and policy rate ratios across all models, ordered by DIC, for the primary outcome → `results/forest_plot_all_models_bar.png` (requires `results/dic_comparison_bar.csv` from script 5).
+- Builds a forest plot of time and policy rate ratios across all models, ordered by DIC, for the primary outcome → `results/forest_plot_bar_two_panels_vertical.png` (requires `results/dic_comparison_bar.csv` from script 5).
 - The cumulative rate-ratio plot and the secondary-outcome forest plot are not produced here; both are built in `6__sensitivity.R` (see [section 6](#6-6__sensitivityr)).
 
 ### 5. `5__diagnostics.R`
@@ -122,7 +122,7 @@ The script then runs the rest of the secondary-outcome workflow itself, so there
 
 - **Results:** `summarise_model()` for each model → `results/summary_<label>.csv`.
 - **Diagnostics:** Trace, density and ACF plots and DIC for each model (same functions as script 5) → `diagnostics/`, then `build_dic_table()` → `results/dic_comparison_info.csv`.
-- **Forest plot:** Forest plot of time and policy rate ratios, ordered by DIC → `results/forest_plot_all_models_info.png`.
+- **Forest plot:** Forest plot of time and policy rate ratios, ordered by DIC → `results/forest_plot_info_two_panels_vertical.png`.
 
 Before running the diagnostics section, edit `99_functions.R`: uncomment the secondary-outcome lines (`base_data` with `y = n_info`, and the `dic_comparison_info.csv` `write_csv`/`message` lines in `build_dic_table()`) and comment out their primary-outcome counterparts. Revert these before re-running scripts 3–5.
 
