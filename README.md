@@ -1,32 +1,53 @@
-## Do journal policies reduce the use of bar graphs for visualizing continuous data? An observational study
 
-An observational study of the effect of journal editorial policies on the inappropriate use of bar graphs for displaying continuous data, using Bayesian hierarchical Poisson models fit with the **nimble** package.
+# Do journal policies reduce the use of bar graphs for visualizing continuous data? An observational study
+
+## Authors and affiliations
+
+1. First Author¹
+2. Second Author²
+3. Third Author¹˒³
+4. First Author¹
+5. Second Author²
+6. Third Author¹˒³
+7. First Author¹
+8. Second Author²
+9. Third Author¹˒³
+
+**Affiliations**
+
+¹ Department/Research Group, Institution Name, City, Country  
+² Department/Research Group, Institution Name, City, Country  
+³ Department/Research Group, Institution Name, City, Country
+
+---
+
+An observational study of the effect of journal editorial policies on the inappropriate use of bar graphs for displaying continuous data, using Bayesian hierarchical Poisson models fitted with the **nimble** package.
 
 ### Quick start
 
-- Clone the repo and create the `data/`, `scripts/`, `results/`, and `diagnostics/` folders locally.
-- Open the project as an RStudio Project (required for the **here** package to resolve paths correctly, and so that the working directory is the repo root).
+- Clone the repository and create the `data/`, `scripts/`, `results/`, and `diagnostics/` folders locally.
+- Open the project as an RStudio Project (required for the **here** package to resolve paths correctly and ensure that the working directory is the repository root).
 - Install the required R packages (see [0. Installing packages](#0-installing-packages) below). Developed and tested under R 4.5.1.
-- Run scripts 2–6 in `scripts/` in order (see [Pipeline overview](#pipeline-overview) below). Script 6 contains the whole secondary-outcome workflow as well as the cumulative rate-ratio plot, so there is no loop back through scripts 4 and 5.
+- Run scripts 2–6 in `scripts/` in order (see [Pipeline overview](#pipeline-overview) below). Script 6 contains the complete secondary-outcome workflow as well as the cumulative rate-ratio plot, so there is no need to loop back through scripts 4 and 5.
 - The pipeline starts from the prepared datasets, so `data/` must already contain `df_descriptive.csv` (read by script 2) and `df_sample.csv` (read by scripts 3 and 6 and by `99_functions.R`).
 - Scripts 4 and 5 build the model labels from `mcmc_niter`, which is defined in `3__models.R` (and `6__sensitivity.R`) but not in `99_functions.R`. Run them in the same R session as script 3.
 
 ### Repository structure
 
-```
+```text
 .
-├── data/          # prepared datasets (df_sample.csv, df_descriptive.csv)
-├── scripts/       # all analysis R scripts (numbered pipeline order)
-├── results/       # model outputs, summary tables, figures
+├── data/          # Prepared datasets (df_sample.csv, df_descriptive.csv)
+├── scripts/       # All analysis R scripts (numbered pipeline order)
+├── results/       # Model outputs, summary tables, figures
 └── diagnostics/   # MCMC diagnostics (trace/density/ACF PDFs, DIC summaries)
 ```
 
 ### Pipeline overview
 
-Scripts are numbered and must be run in order, since each step reads files written by the previous one. All scripts use the **here** package for path handling, so the project should be opened as an RStudio Project (or `here::here()` should resolve to the repo root).
+Scripts are numbered and must be run in order, since each step reads files written by the previous one. All scripts use the **here** package for path handling, so the project should be opened as an RStudio Project (or `here::here()` should resolve to the repository root).
 
 | # | Script | Purpose |
-|---|--------|---------|
+|---|---|---|
 | 2 | `2__descriptives.R` | Produces descriptive summary tables and exploratory figures. |
 | 3 | `3__models.R` | Fits the seven candidate Bayesian Poisson models (primary outcome: number of bar graphs). |
 | 4 | `4__results.R` | Loads fitted models and builds parameter summary tables (posterior summaries with ESS and R-hat) and the forest plot for the primary outcome. |
@@ -36,9 +57,12 @@ Scripts are numbered and must be run in order, since each step reads files writt
 
 ### 0. Installing packages
 
-```{r install-packages, eval=FALSE}
-install.packages(c("nimble", "coda", "dplyr", "tidyr", "tidyverse", "ggplot2", "readr", "purrr", "stringr", "scales", "here",
-                    "openxlsx", "ggh4x", "patchwork", "fs", "viridis"))
+```r
+install.packages(c(
+  "nimble", "coda", "posterior", "dplyr", "tidyr", "tidyverse",
+  "ggplot2", "readr", "purrr", "stringr", "scales", "here",
+  "openxlsx", "ggh4x", "patchwork", "fs", "viridis"
+))
 ```
 
 ### 1. Input data
@@ -48,22 +72,22 @@ install.packages(c("nimble", "coda", "dplyr", "tidyr", "tidyverse", "ggplot2", "
 
 ### 2. `2__descriptives.R`
 
-Reads `data/df_descriptive.csv`, recodes field names for publication, and produces descriptive summaries and plots. Journal-sample counts, policy-adoption, and follow-up summaries.
+Reads `data/df_descriptive.csv`, recodes field names for publication, and produces descriptive summaries and plots, including journal-sample counts, policy adoption, and follow-up summaries.
 
 #### Outputs written to `results/`
 
-- `summary_table.csv` — overall and by-policy-group counts/percentages of bar-only, informative-only, both, and excluded articles.
-- `policy_timeline_plot.png` — timeline of journal policy adoption patterns.
-- `stacked_by_field.png` — horizontal stacked bar chart of graph-type usage by field.
-- `policy_by_year.png` / `nonpolicy_by_year.png` — temporal trend plots of graph-type proportions by field, faceted for policy vs. non-policy journals, with policy-adoption year markers.
+- `summary_table.csv` — Overall and by-policy-group counts/percentages of bar-only, informative-only, both, and excluded articles.
+- `policy_timeline_plot.png` — Timeline of journal policy adoption patterns.
+- `stacked_by_field.png` — Horizontal stacked bar chart of graph-type usage by field.
+- `policy_by_year.png` / `nonpolicy_by_year.png` — Temporal trend plots of graph-type proportions by field, faceted for policy vs. non-policy journals, with policy-adoption year markers.
 
 ### 3. `3__models.R`
 
 Fits seven Bayesian hierarchical Poisson models to the primary outcome, reading `data/df_sample.csv`. Uses **nimble** with 4 parallel MCMC chains (60,000 iterations, 10,000 burn-in, thinning of 10).
 
 | Model | Description |
-|-------|-------------|
-| 1A | Base Poisson, step-change policy effect, journal random intercepts & slopes, with observation-level overdispersion |
+|---|---|
+| 1A | Base Poisson, step-change policy effect, journal random intercepts and slopes, with observation-level overdispersion |
 | 1B | Same as 1A but without overdispersion |
 | 2 | Step-change policy effect, fixed time trend, journal random intercepts only |
 | 3 | Step-change policy effect, journals nested within fields, random slopes |
@@ -73,16 +97,20 @@ Fits seven Bayesian hierarchical Poisson models to the primary outcome, reading 
 
 #### Outputs written to `results/`
 
-- `samples_<label>.rds` — per-chain posterior samples and WAIC for each model.
-- `mcmc_list_<label>.rds` — the same samples as a coda `mcmc.list`.
+- `samples_<label>.rds` — Per-chain posterior samples and WAIC for each model.
+- `mcmc_list_<label>.rds` — The same samples as a `coda` `mcmc.list`.
 
-Labels follow the pattern `model1a_pois_60k`, `model1b_pois_60k`, `model2_pois_60k`, …, `model6_pois_60k` (the number is `mcmc_niter` in thousands). Models are fitted through `build_and_run_pois()` in `99_functions.R`: one chain per core (up to `detectCores() − 2`; any remaining chains queue), with fixed seeds 20260216–20260219. Run times recorded in the script comments are roughly 10–19 hours for Models 1B, 2, 3 and 6, and under half an hour for Models 1A, 4 and 5.
+Labels follow the pattern `model1a_pois_60k`, `model1b_pois_60k`, `model2_pois_60k`, …, `model6_pois_60k` (the number is `mcmc_niter` in thousands).
+
+Models are fitted through `build_and_run_pois()` in `99_functions.R`: one chain per core (up to `detectCores() - 2`; any remaining chains queue), with fixed seeds 20260216–20260219.
+
+Run times recorded in the script comments are roughly 10–19 hours for Models 1B, 2, 3 and 6, and under half an hour for Models 1A, 4 and 5.
 
 ### 4. `4__results.R`
 
 Loads the fitted model objects from `results/` and produces final summary tables and comparison figures for the primary outcome. Requires `mcmc_niter` to be defined (see [Quick start](#quick-start)).
 
-- Calls `summarise_model()` for each of the 7 models (posterior mean, SD, 95% credible interval, ESS and $\hat{R}$ for key parameters) → `results/summary_<model_label>.csv`.
+- Calls `summarise_model()` for each of the 7 models (posterior mean, SD, 95% credible interval, ESS and \(\hat{R}\) for key parameters) → `results/summary_<model_label>.csv`.
 - Builds a forest plot of time and policy rate ratios across all models, ordered by DIC, for the primary outcome → `results/forest_plot_all_models_bar.png` (requires `results/dic_comparison_bar.csv` from script 5).
 - The cumulative rate-ratio plot and the secondary-outcome forest plot are not produced here; both are built in `6__sensitivity.R` (see [section 6](#6-6__sensitivityr)).
 
@@ -99,15 +127,19 @@ For each of the 7 primary-outcome models, loads the MCMC/sample objects from `re
 
 #### Secondary-outcome models
 
-Refits the same 7 model structures as `3__models.R`, but with `n_info` (more informative graph counts) as the outcome instead of `n_bar`. Labels are suffixed `_info_pois_60k` (e.g., `model1a_info_pois_60k`) and outputs follow the same pattern as script 3 (`results/samples_<label>.rds`, `results/mcmc_list_<label>.rds`). The script then runs the rest of the secondary-outcome workflow itself, so there is no need to loop back through scripts 4 and 5.
+Refits the same 7 model structures as `3__models.R`, but with `n_info` (more informative graph counts) as the outcome instead of `n_bar`. Labels are suffixed `_info_pois_60k` (e.g., `model1a_info_pois_60k`) and outputs follow the same pattern as script 3 (`results/samples_<label>.rds`, `results/mcmc_list_<label>.rds`).
+
+The script then runs the rest of the secondary-outcome workflow itself, so there is no need to loop back through scripts 4 and 5.
 
 #### Results, diagnostics and forest plot (secondary outcome)
 
 - **Results:** `summarise_model()` for each model → `results/summary_<label>.csv`.
-- **Diagnostics:** trace, density and ACF plots and DIC for each model (same functions as script 5) → `diagnostics/`, then `build_dic_table()` → `results/dic_comparison_info.csv`.
-- **Forest plot** of time and policy rate ratios, ordered by DIC → `results/forest_plot_all_models_info.png`.
+- **Diagnostics:** Trace, density and ACF plots and DIC for each model (same functions as script 5) → `diagnostics/`, then `build_dic_table()` → `results/dic_comparison_info.csv`.
+- **Forest plot:** Forest plot of time and policy rate ratios, ordered by DIC → `results/forest_plot_all_models_info.png`.
 
-Before running the diagnostics section, edit `99_functions.R`: uncomment the secondary-outcome lines (`base_data` with `y = n_info`, and the `dic_comparison_info.csv` `write_csv`/`message` lines in `build_dic_table()`) and comment out their primary-outcome counterparts. Revert these before re-running scripts 3–5. Note that `build_dic_table()` collects every `dic_*.rds` file in `results/`, so the info table will also list the primary-outcome models; the forest-plot code keeps only the `_info_` models.
+Before running the diagnostics section, edit `99_functions.R`: uncomment the secondary-outcome lines (`base_data` with `y = n_info`, and the `dic_comparison_info.csv` `write_csv`/`message` lines in `build_dic_table()`) and comment out their primary-outcome counterparts. Revert these before re-running scripts 3–5.
+
+Note that `build_dic_table()` collects every `dic_*.rds` file in `results/`, so the info table will also list the primary-outcome models; the forest-plot code keeps only the `_info_` models.
 
 #### Cumulative rate-ratio plot
 
