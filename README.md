@@ -3,11 +3,11 @@
 
 Robert Schulz<sup>1</sup>, Teshome K. Deressa<sup>2,3</sup>, Adrian Barnett<sup>4</sup>, Yazid Zalia<sup>1</sup>, Teresa Cunha-Oliveira<sup>2,3</sup>, Camila Victoria-Quilla Baselly Heibrich<sup>1</sup>, Parya Abbasi<sup>1,5</sup>, Vladislav Nachev<sup>1</sup>, Tracey L. Weissgerber<sup>2,3</sup>
 
-<sup>1</sup> QUEST Center for Responsible Research, Berlin Institute of Health at Charité – Universitätsmedizin Berlin, Berlin, Germany  
-<sup>2</sup> Center for Innovative Biomedicine and Biotechnology (CIBB), University of Coimbra, Coimbra, Portugal  
-<sup>3</sup> Center for Neuroscience and Cell Biology (CNC-UC), University of Coimbra, Coimbra, Portugal  
-<sup>4</sup> Australian Centre for Health Services Innovation and Centre for Healthcare Transformation, School of Public Health and Social Work, Faculty of Health, Queensland University of Technology, Brisbane, QLD, Australia  
-<sup>5</sup> SYNLAB MVZ Berlin GmbH, Berlin, Germany
+<sup>1</sup> *QUEST Center for Responsible Research, Berlin Institute of Health at Charité – Universitätsmedizin Berlin, Berlin, Germany*  
+<sup>2</sup> *Center for Innovative Biomedicine and Biotechnology (CIBB), University of Coimbra, Coimbra, Portugal*  
+<sup>3</sup> *Center for Neuroscience and Cell Biology (CNC-UC), University of Coimbra, Coimbra, Portugal*  
+<sup>4</sup> *Australian Centre for Health Services Innovation and Centre for Healthcare Transformation, School of Public Health and Social Work, Faculty of Health, Queensland University of Technology, Brisbane, QLD, Australia*  
+<sup>5</sup> *SYNLAB MVZ Berlin GmbH, Berlin, Germany*
 
 ---
 
