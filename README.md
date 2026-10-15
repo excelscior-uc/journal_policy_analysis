@@ -1,7 +1,7 @@
 
 # Do journal policies reduce the use of bar graphs for visualizing continuous data? An observational study
 
-Robert Schulz¹, Teshome K. Deressa²˒³, Adrian Barnett<sup>4</sup>, Yazid Zalia<sup>1</sup>, Teresa Cunha-Oliveira<sup>2,3</sup>, Camila Victoria-Quilla Baselly Heibrich<sup>1</sup>, Parya Abbasi<sup>1,5</sup>, Second Author², Third Author¹˒³
+Robert Schulz<sup>1</sup>, Teshome K. Deressa<sup>2,3</sup>, Adrian Barnett<sup>4</sup>, Yazid Zalia<sup>1</sup>, Teresa Cunha-Oliveira<sup>2,3</sup>, Camila Victoria-Quilla Baselly Heibrich<sup>1</sup>, Parya Abbasi<sup>1,5</sup>, Vladislav Nachev<sup>1</sup>, Tracey L. Weissgerber<sup>2,3</sup>
 
 ¹ Berlin Institute of Health at Charite´- Universitätsmedizin Berlin, QUEST Center for Responsible Research, Berlin, Germany  
 ² CIBB, Center for Innovative Biomedicine and Biotechnology, University of Coimbra, Coimbra, Portugal  
