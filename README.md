@@ -6,6 +6,8 @@ Robert Schulz<sup>1</sup>, Teshome K. Deressa<sup>2,3</sup>, Adrian Barnett<sup>
 ¹ Berlin Institute of Health at Charite´- Universitätsmedizin Berlin, QUEST Center for Responsible Research, Berlin, Germany  
 ² CIBB, Center for Innovative Biomedicine and Biotechnology, University of Coimbra, Coimbra, Portugal  
 ³ CNC-UC, Center for Neuroscience and Cell Biology, University of Coimbra, Coimbra, Portugal
+4 Australian Centre for Health Services Innovation and Centre for Healthcare Transformation, School of Public Health and Social Work, Faculty of Health, Queensland University of Technology, Brisbane, QLD, Australia
+5 Synlab MVZ Berlin GmbH, Berlin, Germany
 
 ---
 
