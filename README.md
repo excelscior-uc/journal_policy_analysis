@@ -109,11 +109,6 @@ Reads `data/df_descriptive.csv`, recodes field names for publication, and produc
 
 Fits the seven Bayesian hierarchical Poisson models (see [Models](#models)) to the primary outcome, reading `data/df_sample.csv`.
 
-- **Sampler:** nimble, 4 parallel chains, 60,000 iterations, 10,000 burn-in, thinning of 10.
-- **Implementation:** `build_and_run_pois()` in `99_functions.R`. One chain per core (up to `detectCores() - 2`; remaining chains queue).
-- **Seeds:** fixed, 20260216–20260219.
-- **Run times:** roughly 10–19 hours for Models 1B, 2, 3 and 6; under half an hour for Models 1A, 4 and 5.
-
 **Writes to `results/`:**
 
 - `samples_<label>.rds`: per-chain posterior samples and WAIC.
