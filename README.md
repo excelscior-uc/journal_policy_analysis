@@ -93,12 +93,6 @@ Code for an observational study evaluating whether journal editorial policies re
 | `n_bar_xor_info` | Articles with exactly one category (bar graphs or informative visualizations, not both). |
 
 
-**Notes**
-
-- `n_bar` and `n_info` can include the same article, so their sum may exceed `n_bar_or_info`.
-- The numeric codes of `bar_specificity`, `recommendation` and `sample_size` should be interpreted with the original policy-strength codebook.
-- `year_since_policy = 0` covers both pre-adoption journals and journals with no recorded adoption year. Use `year_policy_started` to tell them apart.
-
 ## Script reference
 
 ### `2__descriptives.R`
