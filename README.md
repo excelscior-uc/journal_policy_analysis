@@ -158,7 +158,7 @@ For each of the 7 primary-outcome models, loads the MCMC and sample objects from
 | 1B | Step change | Same as 1A without overdispersion |
 | 2 | Step change | Fixed time trend, journal random intercepts only |
 | 3 | Step change | Journals nested within fields, random slopes |
-| 4 | Gradual (`year_since_policy`) | Fixed time trend, random intercepts |
+| 4 | Gradual | Fixed time trend, random intercepts |
 | 5 | Gradual | Journal-specific time trends |
 | 6 | Gradual | Field hierarchy + journal-specific time trends |
 
