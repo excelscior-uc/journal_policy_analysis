@@ -52,14 +52,14 @@ Code for an observational study of the effect of journal editorial policies on t
 
 ## Pipeline overview
 
-| Script | Stage | Purpose |
-|:---|:---|:---|
-| `99_functions.R` | Helpers | Shared helper functions; sourced by the other scripts. |
-| `2__descriptives.R` | Explore | Descriptive summary tables and exploratory figures. |
-| `3__models.R` | Model (primary) | Fits the seven candidate Bayesian Poisson models for `n_bar`. |
-| `4__results.R` | Report (primary) | Posterior summary tables (with ESS and R-hat) and the forest plot. |
-| `5__diagnostics.R` | Check (primary) | MCMC diagnostics (trace, density, ACF), DIC per model, and the DIC comparison table. |
-| `6__sensitivity.R` | Sensitivity | Refits all seven models for `n_info`, runs their summaries, diagnostics, DIC table and forest plot, and builds the cumulative rate-ratio plot. |
+| Script | Purpose |
+|:---|:---|
+| `99_functions.R` | Shared helper functions; sourced by the other scripts. |
+| `2__descriptives.R` | Descriptive summary tables and exploratory figures. |
+| `3__models.R` | Fits the seven candidate Bayesian Poisson models for `n_bar`. |
+| `4__results.R` | Posterior summary tables (with ESS and R-hat) and the forest plot. |
+| `5__diagnostics.R` | MCMC diagnostics (trace, density, ACF), DIC per model, and the DIC comparison table. |
+| `6__sensitivity.R` | Refits all seven models for `n_info`, runs their summaries, diagnostics, DIC table and forest plot, and builds the cumulative rate-ratio plot. |
 
 **Run order:** 2 → 3 → 5 → 4 → 6. The forest plot in script 4 reads `results/dic_comparison_bar.csv`, which script 5 writes, so run script 5 first (or rerun script 4 afterwards). Script 6 is self-contained for the secondary outcome, so there is no need to loop back through scripts 4 and 5.
 
