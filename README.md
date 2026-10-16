@@ -92,8 +92,8 @@ for path handling, so the project should be opened as an RStudio Project
                                                   and forest plot; also
                                                   builds the cumulative
                                                   rate-ratio plot.
-
-  6                     `99_functions.R`        Shared helper functions.
+                                                  
+                          `99_functions.R`       Shared helper functions.  
   -----------------------------------------------------------------------
 
 ### 0. Installing packages
