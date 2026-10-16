@@ -57,27 +57,6 @@ Code for an observational study of the effect of journal editorial policies on t
 
 ## Pipeline overview
 
-```mermaid
-flowchart LR
-    F["99_functions.R<br/>shared helpers"]
-    D["2__descriptives.R<br/>descriptive tables + figures"]
-    M["3__models.R<br/>fit 7 models (n_bar)"]
-    G["5__diagnostics.R<br/>MCMC checks + DIC"]
-    R["4__results.R<br/>summaries + forest plot"]
-    S["6__sensitivity.R<br/>n_info models + cumulative RR plot"]
-
-    D --> M
-    M --> G
-    M --> R
-    G -- "dic_comparison_bar.csv" --> R
-    M --> S
-    F -. sourced by all .-> D
-    F -.-> M
-    F -.-> G
-    F -.-> R
-    F -.-> S
-```
-
 | Script | Stage | Purpose |
 |:---|:---|:---|
 | `99_functions.R` | Helpers | Shared helper functions; sourced by the other scripts. |
