@@ -77,8 +77,8 @@ Code for an observational study evaluating whether journal editorial policies re
 | `field` | Biomedical subject field of the journal. |
 | `journal` | Journal name. |
 | `year` | Publication year (2010–2025). |
-| `policy_ref` | Whether the journal is classified as a policy-reference journal (`1`) or not (`0`). |
-| `policy` | Whether the policy had been implemented by the publication year (`1` = adoption year or later; `0` = before adoption or no recorded adoption year). |
+| `policy_ref` | `1` = treated journal (adopted the policy during the study period); `0` = control journal (never adopted).|
+| `policy` | `1` = journal-year in or after the adoption year; `0` = pre-adoption years and all control-journal years. |
 | `year_policy_started` | Year the policy was adopted; missing if none recorded. |
 | `year_since_policy` | Time since adoption: `0` before adoption or if no adoption year; `1` in the adoption year; `2` the following year, and so on. |
 | `year_centered` | `year - mean(year)` across the aggregated dataset. |
