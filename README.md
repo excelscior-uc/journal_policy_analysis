@@ -97,7 +97,7 @@ Code for an observational study of the effect of journal editorial policies on t
 | `year_policy_started` | Integer year | Year the policy was adopted; missing if none recorded. |
 | `year_since_policy` | Integer | Time since adoption: `0` before adoption or if no adoption year; `1` in the adoption year; `2` the following year, and so on. |
 | `year_centered` | Numeric | `year - mean(year)` across the aggregated dataset. |
-| `log_offset` | Numeric | `log(n_bar_or_info / 100)`. Exposure offset in applicable count models. |
+| `log_offset` | Numeric | Exposure offset in applicable count models. |
 
 **Notes**
 
@@ -184,6 +184,5 @@ For each of the 7 primary-outcome models, loads the MCMC and sample objects from
 
 ## Known quirks
 
-- **`mcmc_niter` is not in `99_functions.R`.** It is defined in `3__models.R` and `6__sensitivity.R`, and scripts 4 and 5 use it to build model labels. Run scripts 4 and 5 in the same R session as script 3, or define `mcmc_niter <- 60000` yourself first.
 - **Switching `99_functions.R` for the secondary outcome.** Before the diagnostics section of script 6, edit `99_functions.R`: uncomment the secondary-outcome lines (`base_data` with `y = n_info`, and the `dic_comparison_info.csv` `write_csv`/`message` lines in `build_dic_table()`) and comment out their primary-outcome counterparts. **Revert these before re-running scripts 3–5.**
-- **The info DIC table includes primary models.** `build_dic_table()` collects every `dic_*.rds` file in `results/`, so `dic_comparison_info.csv` also lists the primary-outcome models. The forest-plot code keeps only the `_info_` models.
+
