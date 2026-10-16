@@ -38,7 +38,7 @@ Code for an observational study evaluating whether journal editorial policies re
                       "patchwork", "fs", "viridis"))
 ```
 
-5. Run the scripts in `scripts/` in the order shown below, **in a single R session**.
+5. Run the scripts in `scripts/`.
 
 ## Repository structure
 
