@@ -56,17 +56,17 @@ for path handling, so the project should be opened as an RStudio Project
   -----------------------------------------------------------------------
   \#                      Script                  Purpose
   ----------------------- ----------------------- -----------------------
-  2                       `2__descriptives.R`     Produces descriptive
+  1                       `2__descriptives.R`     Produces descriptive
                                                   summary tables and
                                                   exploratory figures.
 
-  3                       `3__models.R`           Fits the seven
+  2                       `3__models.R`           Fits the seven
                                                   candidate Bayesian
                                                   Poisson models (primary
                                                   outcome: number of bar
                                                   graphs).
 
-  4                       `4__results.R`          Loads fitted models and
+  3                       `4__results.R`          Loads fitted models and
                                                   builds parameter
                                                   summary tables
                                                   (posterior summaries
@@ -74,7 +74,7 @@ for path handling, so the project should be opened as an RStudio Project
                                                   the forest plot for the
                                                   primary outcome.
 
-  5                       `5__diagnostics.R`      Produces MCMC
+  4                       `5__diagnostics.R`      Produces MCMC
                                                   diagnostics (trace,
                                                   density, ACF plots) and
                                                   DIC for each
@@ -82,7 +82,7 @@ for path handling, so the project should be opened as an RStudio Project
                                                   then collates the DIC
                                                   comparison table.
 
-  6                       `6__sensitivity.R`      Sensitivity analyses:
+  5                       `6__sensitivity.R`      Sensitivity analyses:
                                                   refits models 1A--6 for
                                                   the secondary outcome
                                                   (number of more
@@ -93,7 +93,7 @@ for path handling, so the project should be opened as an RStudio Project
                                                   builds the cumulative
                                                   rate-ratio plot.
 
-  7                     `99_functions.R`        Shared helper functions.
+  6                     `99_functions.R`        Shared helper functions.
   -----------------------------------------------------------------------
 
 ### 0. Installing packages
