@@ -75,7 +75,7 @@ Code for an observational study evaluating whether journal editorial policies re
 | Variable | Definition |
 |:---|:---|
 | `field` | Biomedical subject field of the journal. |
-| `journal` | Standardized journal name. |
+| `journal` | Journal name. |
 | `year` | Publication year (2010–2025). |
 | `policy_ref` | Whether the journal is classified as a policy-reference journal (`1`) or not (`0`). |
 | `bar_specificity` | Policy-strength variable: specificity of the journal's bar-graph guidance. |
