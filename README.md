@@ -1,4 +1,4 @@
-# Do journal policies reduce the use of bar graphs for visualizing continuous data? An observational study
+## Do journal policies reduce the use of bar graphs for visualizing continuous data? An observational study
 
 Robert Schulz<sup>1</sup>, Teshome K. Deressa<sup>2,3</sup>, Adrian Barnett<sup>4</sup>, Yazid Zalia<sup>1</sup>, Teresa Cunha-Oliveira<sup>2,3</sup>, Camila Victoria-Quilla Baselly Heibrich<sup>1</sup>, Parya Abbasi<sup>1,5</sup>, Vladislav Nachev<sup>1</sup>, Tracey L. Weissgerber<sup>2,3</sup>
 
@@ -15,7 +15,7 @@ Code for an observational study evaluating whether journal editorial policies re
 - **Primary outcome:** number of articles with bar graphs for continuous data (`n_bar`)
 - **Secondary outcome:** number of articles with more informative graphs (`n_info`)
 
-## Contents
+### Contents
 
 - [Quick start](#quick-start)
 - [Repository structure](#repository-structure)
@@ -25,7 +25,7 @@ Code for an observational study evaluating whether journal editorial policies re
 - [Models](#models)
 - [Outputs](#outputs)
 
-## Quick start
+### Quick start
 
 1. Clone the repository and create the `data/`, `scripts/`, `results/` and `diagnostics/` folders locally.
 2. Put the prepared datasets in `data/`: `df_descriptive.csv` (read by script 2) and `df_sample.csv` (read by scripts 3 and 6 and by `99_functions.R`).
@@ -39,7 +39,7 @@ Code for an observational study evaluating whether journal editorial policies re
 
 5. Run the scripts in `scripts/`.
 
-## Repository structure
+### Repository structure
 
 ```text
 .
@@ -49,7 +49,7 @@ Code for an observational study evaluating whether journal editorial policies re
 └── diagnostics/   # MCMC diagnostics (trace/density/ACF PDFs, DIC summaries)
 ```
 
-## Pipeline overview
+### Pipeline overview
 
 | Script | Purpose |
 |:---|:---|
@@ -62,14 +62,14 @@ Code for an observational study evaluating whether journal editorial policies re
 
 **Run order:** 2 → 3 → 5 → 4 → 6. The forest plot in script 4 reads `results/dic_comparison_bar.csv`, which script 5 writes, so run script 5 first (or rerun script 4 afterwards). Script 6 is self-contained for the secondary outcome, so there is no need to loop back through scripts 4 and 5.
 
-## Input data
+### Input data
 
 | File | Description |
 |:---|:---|
 | `df_descriptive.csv` | Journal-year-level data for descriptive summaries, including counts of articles excluded from the main analysis. |
 | `df_sample.csv` | Journal-year-level data restricted to articles containing bar graphs for continuous data, informative visualizations, or both. Used for the primary and secondary analyses. |
 
-### Data dictionary
+#### Data dictionary
 
 | Variable | Definition |
 |:---|:---|
@@ -92,9 +92,9 @@ Code for an observational study evaluating whether journal editorial policies re
 | `n_bar_xor_info` | Articles with exactly one category (bar graphs or informative visualizations, not both). |
 
 
-## Script reference
+### Script reference
 
-### `2__descriptives.R`
+#### `2__descriptives.R`
 
 Reads `data/df_descriptive.csv`, recodes field names for publication, and produces descriptive summaries and plots (journal-sample counts, policy adoption, follow-up).
 
@@ -105,7 +105,7 @@ Reads `data/df_descriptive.csv`, recodes field names for publication, and produc
 - `stacked_by_field.png`: horizontal stacked bar chart of graph-type usage by field.
 - `policy_by_year.png` / `nonpolicy_by_year.png`: temporal trends in graph-type proportions by field, for policy vs. non-policy journals, with adoption-year markers.
 
-### `3__models.R`
+#### `3__models.R`
 
 Fits the seven Bayesian hierarchical Poisson models (see [Models](#models)) to the primary outcome, reading `data/df_sample.csv`.
 
@@ -121,7 +121,7 @@ Fits the seven Bayesian hierarchical Poisson models (see [Models](#models)) to t
 
 Labels follow `model1a_pois_60k`, `model1b_pois_60k`, `model2_pois_60k`, …, `model6_pois_60k` (the number is `mcmc_niter` in thousands).
 
-### `4__results.R`
+#### `4__results.R`
 
 Loads the fitted models from `results/` and produces the summary tables and forest plot for the primary outcome. Requires `mcmc_niter`.
 
@@ -129,7 +129,7 @@ Loads the fitted models from `results/` and produces the summary tables and fore
 - Draws a forest plot of time and policy rate ratios across all models, ordered by DIC → `results/forest_plot_bar_two_panels_vertical.png`. **Requires `results/dic_comparison_bar.csv` from script 5.**
 - The cumulative rate-ratio plot and the secondary-outcome forest plot are built in `6__sensitivity.R`, not here.
 
-### `5__diagnostics.R`
+#### `5__diagnostics.R`
 
 For each of the 7 primary-outcome models, loads the MCMC and sample objects from `results/` (requires `mcmc_niter`) and:
 
@@ -138,7 +138,7 @@ For each of the 7 primary-outcome models, loads the MCMC and sample objects from
 - computes DIC (`compute_dic()`, with model-specific log-likelihood functions for the non-nested, 3-level nested and field-hierarchy structures) → `results/dic_<label>.rds`, `diagnostics/dic_<label>.txt`;
 - collates all DIC results with `build_dic_table()`, ranked by DIC with ΔDIC → `results/dic_comparison_bar.csv`.
 
-### `6__sensitivity.R`
+#### `6__sensitivity.R`
 
 **Secondary-outcome models.** Refits the same 7 model structures as script 3 with `n_info` as the outcome. Labels are suffixed `_info_pois_60k` (e.g. `model1a_info_pois_60k`); outputs follow the same pattern as script 3.
 
@@ -150,7 +150,7 @@ For each of the 7 primary-outcome models, loads the MCMC and sample objects from
 
 **Cumulative rate-ratio plot.** Builds cumulative rate-ratio curves for the 7 *primary-outcome* models over −3 to +3 years relative to policy adoption, using the joint posterior draws of the time (`beta`) and policy (`gamma`) effects. Step-change models (1A–3) are solid and gradual-change models (4–6) are dashed → `results/cumulative_rr_policy_event_time_joint.png`. This needs the primary models from script 3.
 
-## Models
+### Models
 
 | Model | Policy effect | Description |
 |:---|:---|:---|
@@ -162,7 +162,7 @@ For each of the 7 primary-outcome models, loads the MCMC and sample objects from
 | 5 | Gradual | Journal-specific time trends |
 | 6 | Gradual | Field hierarchy + journal-specific time trends |
 
-## Outputs
+### Outputs
 
 | Folder | Contents |
 |:---|:---|
