@@ -93,11 +93,7 @@ for path handling, so the project should be opened as an RStudio Project
                                                   builds the cumulative
                                                   rate-ratio plot.
 
-  ---                     `99_functions.R`        Shared helper functions
-                                                  (model runner,
-                                                  summaries, diagnostics,
-                                                  DIC). Sourced by
-                                                  scripts 3--6.
+  7                     `99_functions.R`        Shared helper functions.
   -----------------------------------------------------------------------
 
 ### 0. Installing packages
