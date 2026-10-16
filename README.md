@@ -74,7 +74,7 @@ Code for an observational study of the effect of journal editorial policies on t
 
 3,211 observations and 17 variables. Each observation is a journal-year record within a biomedical field and policy-reference classification.
 
-|| Variable | Definition |
+| Variable | Definition |
 |:---|:---|
 | `field` | Biomedical subject field of the journal. |
 | `journal` | Standardized journal name. |
