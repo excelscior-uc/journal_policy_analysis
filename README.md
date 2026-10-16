@@ -33,9 +33,8 @@ Code for an observational study evaluating whether journal editorial policies re
 4. Install the required packages (developed and tested under **R 4.5.1**):
 
 ```r
-   install.packages(c("nimble", "coda", "posterior", "dplyr", "tidyr", "tidyverse", "ggplot2",
-                      "readr", "purrr", "stringr", "scales", "here", "openxlsx", "ggh4x",
-                      "patchwork", "fs", "viridis"))
+   install.packages(c("nimble", "coda", "posterior", "dplyr", "tidyr", "tidyverse", "ggplot2", "readr", "purrr", "stringr", "scales",
+                      "here", "openxlsx", "ggh4x", "patchwork", "fs", "viridis"))
 ```
 
 5. Run the scripts in `scripts/`.
