@@ -10,7 +10,7 @@ Robert Schulz<sup>1</sup>, Teshome K. Deressa<sup>2,3</sup>, Adrian Barnett<sup>
 
 ---
 
-Code for an observational study of the effect of journal editorial policies on the inappropriate use of bar graphs for displaying continuous data. The analysis uses Bayesian hierarchical Poisson models fitted with the **nimble** package.
+Code for an observational study of the effect of journal editorial policies on the inappropriate use of bar graphs for displaying continuous data (and more informative graphs). The analysis uses Bayesian hierarchical Poisson models fitted with the **nimble** package.
 
 - **Primary outcome:** number of articles with bar graphs for continuous data (`n_bar`)
 - **Secondary outcome:** number of articles with more informative graphs (`n_info`)
