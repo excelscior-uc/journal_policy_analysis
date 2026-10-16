@@ -70,9 +70,7 @@ Code for an observational study of the effect of journal editorial policies on t
 | `df_descriptive.csv` | Journal-year-level data for descriptive summaries, including counts of articles excluded from the main analysis. |
 | `df_sample.csv` | Journal-year-level data restricted to articles containing bar graphs for continuous data, informative visualizations, or both. Used for the primary and secondary analyses. |
 
-### Data dictionary: `df_sample.csv`
-
-3,211 observations and 17 variables. Each observation is a journal-year record within a biomedical field and policy-reference classification.
+### Data dictionary
 
 | Variable | Definition |
 |:---|:---|
