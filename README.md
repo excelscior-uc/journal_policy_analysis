@@ -78,6 +78,11 @@ Code for an observational study evaluating whether journal editorial policies re
 | `journal` | Journal name. |
 | `year` | Publication year (2010–2025). |
 | `policy_ref` | Whether the journal is classified as a policy-reference journal (`1`) or not (`0`). |
+| `policy` | Whether the policy had been implemented by the publication year (`1` = adoption year or later; `0` = before adoption or no recorded adoption year). |
+| `year_policy_started` | Year the policy was adopted; missing if none recorded. |
+| `year_since_policy` | Time since adoption: `0` before adoption or if no adoption year; `1` in the adoption year; `2` the following year, and so on. |
+| `year_centered` | `year - mean(year)` across the aggregated dataset. |
+| `log_offset` | Exposure offset in applicable count models. |
 | `bar_specificity` | Policy-strength variable: specificity of the journal's bar-graph guidance. |
 | `recommendation` | Policy-strength variable: coded recommendation category. |
 | `sample_size` | Policy-strength variable: coded sample-size category. |
@@ -86,11 +91,7 @@ Code for an observational study evaluating whether journal editorial policies re
 | `n_bar_or_info` | Unique articles with bar graphs, informative visualizations, or both. Denominator for the primary analysis. |
 | `n_both` | Articles with both bar graphs and informative visualizations. |
 | `n_bar_xor_info` | Articles with exactly one category (bar graphs or informative visualizations, not both). |
-| `policy` | Whether the policy had been implemented by the publication year (`1` = adoption year or later; `0` = before adoption or no recorded adoption year). |
-| `year_policy_started` | Year the policy was adopted; missing if none recorded. |
-| `year_since_policy` | Time since adoption: `0` before adoption or if no adoption year; `1` in the adoption year; `2` the following year, and so on. |
-| `year_centered` | `year - mean(year)` across the aggregated dataset. |
-| `log_offset` | Exposure offset in applicable count models. |
+
 
 **Notes**
 
