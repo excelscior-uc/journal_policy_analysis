@@ -54,7 +54,7 @@ Code for an observational study of the effect of journal editorial policies on t
 
 | Script | Purpose |
 |:---|:---|
-| `99_functions.R` | Shared helper functions; sourced by the other scripts. |
+| `99_functions.R` | Shared helper functions. |
 | `2__descriptives.R` | Descriptive summary tables and exploratory figures. |
 | `3__models.R` | Fits the seven candidate Bayesian Poisson models for `n_bar`. |
 | `4__results.R` | Posterior summary tables (with ESS and R-hat) and the forest plot. |
