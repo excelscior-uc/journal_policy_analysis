@@ -1,27 +1,12 @@
 # Do journal policies reduce the use of bar graphs for visualizing continuous data? An observational study
 
-Robert Schulz`<sup>`{=html}1`</sup>`{=html}, Teshome K.
-Deressa`<sup>`{=html}2,3`</sup>`{=html}, Adrian
-Barnett`<sup>`{=html}4`</sup>`{=html}, Yazid
-Zalia`<sup>`{=html}1`</sup>`{=html}, Teresa
-Cunha-Oliveira`<sup>`{=html}2,3`</sup>`{=html}, Camila Victoria-Quilla
-Baselly Heibrich`<sup>`{=html}1`</sup>`{=html}, Parya
-Abbasi`<sup>`{=html}1,5`</sup>`{=html}, Vladislav
-Nachev`<sup>`{=html}1`</sup>`{=html}, Tracey L.
-Weissgerber`<sup>`{=html}2,3`</sup>`{=html}
+Robert Schulz<sup>1</sup>, Teshome K. Deressa<sup>2,3</sup>, Adrian Barnett<sup>4</sup>, Yazid Zalia<sup>1</sup>, Teresa Cunha-Oliveira<sup>2,3</sup>, Camila Victoria-Quilla Baselly Heibrich<sup>1</sup>, Parya Abbasi<sup>1,5</sup>, Vladislav Nachev<sup>1</sup>, Tracey L. Weissgerber<sup>2,3</sup>
 
-`<sup>`{=html}1`</sup>`{=html} *QUEST Center for Responsible Research,
-Berlin Institute of Health at Charité -- Universitätsmedizin Berlin,
-Berlin, Germany*\
-`<sup>`{=html}2`</sup>`{=html} *CIBB, Center for Innovative Biomedicine
-and Biotechnology, University of Coimbra, Coimbra, Portugal*\
-`<sup>`{=html}3`</sup>`{=html} *CNC-UC, Center for Neuroscience and Cell
-Biology, University of Coimbra, Coimbra, Portugal*\
-`<sup>`{=html}4`</sup>`{=html} *Australian Centre for Health Services
-Innovation and Centre for Healthcare Transformation, School of Public
-Health and Social Work, Faculty of Health, Queensland University of
-Technology, Brisbane, QLD, Australia*\
-`<sup>`{=html}5`</sup>`{=html} *SYNLAB MVZ Berlin GmbH, Berlin, Germany*
+<sup>1</sup> *QUEST Center for Responsible Research, Berlin Institute of Health at Charité – Universitätsmedizin Berlin, Berlin, Germany*  
+<sup>2</sup> *CIBB, Center for Innovative Biomedicine and Biotechnology, University of Coimbra, Coimbra, Portugal*  
+<sup>3</sup> *CNC-UC, Center for Neuroscience and Cell Biology, University of Coimbra, Coimbra, Portugal*  
+<sup>4</sup> *Australian Centre for Health Services Innovation and Centre for Healthcare Transformation, School of Public Health and Social Work, Faculty of Health, Queensland University of Technology, Brisbane, QLD, Australia*  
+<sup>5</sup> *SYNLAB MVZ Berlin GmbH, Berlin, Germany*
 
 ------------------------------------------------------------------------
 
