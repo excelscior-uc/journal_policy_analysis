@@ -73,7 +73,7 @@ Code for an observational study evaluating whether journal editorial policies re
 
 | Variable | Definition |
 |:---|:---|
-| `field` | Biomedical subject field of the journal. |
+| `field` | Subject field of the journal. |
 | `journal` | Journal name. |
 | `year` | Publication year (2010–2025). |
 | `policy_ref` | `1` = treated journal (adopted the policy during the study period); `0` = control journal (never adopted).|
