@@ -74,25 +74,25 @@ Code for an observational study of the effect of journal editorial policies on t
 
 3,211 observations and 17 variables. Each observation is a journal-year record within a biomedical field and policy-reference classification.
 
-| Variable | Type | Definition |
-|:---|:---|:---|
-| `field` | Character | Biomedical subject field of the journal. |
-| `journal` | Character | Standardized journal name. |
-| `year` | Integer | Publication year (2010–2025). |
-| `policy_ref` | Binary (0/1) | Whether the journal is classified as a policy-reference journal (`1`) or not (`0`). |
-| `bar_specificity` | Numeric categorical | Policy-strength variable: specificity of the journal's bar-graph guidance. |
-| `recommendation` | Numeric categorical | Policy-strength variable: coded recommendation category. |
-| `sample_size` | Numeric categorical | Policy-strength variable: coded sample-size category. |
-| `n_bar` | Integer count | Articles with at least one bar graph for continuous data (each article counted once). |
-| `n_info` | Integer count | Articles with at least one informative visualization: bar-dot, box, dot, histogram or violin plot. |
-| `n_bar_or_info` | Integer count | Unique articles with bar graphs, informative visualizations, or both. Denominator for the primary analysis. |
-| `n_both` | Integer count | Articles with both bar graphs and informative visualizations. |
-| `n_bar_xor_info` | Integer count | Articles with exactly one category (bar graphs or informative visualizations, not both). |
-| `policy` | Binary (0/1) | Whether the policy had been implemented by the publication year (`1` = adoption year or later; `0` = before adoption or no recorded adoption year). |
-| `year_policy_started` | Integer year | Year the policy was adopted; missing if none recorded. |
-| `year_since_policy` | Integer | Time since adoption: `0` before adoption or if no adoption year; `1` in the adoption year; `2` the following year, and so on. |
-| `year_centered` | Numeric | `year - mean(year)` across the aggregated dataset. |
-| `log_offset` | Numeric | Exposure offset in applicable count models. |
+|| Variable | Definition |
+|:---|:---|
+| `field` | Biomedical subject field of the journal. |
+| `journal` | Standardized journal name. |
+| `year` | Publication year (2010–2025). |
+| `policy_ref` | Whether the journal is classified as a policy-reference journal (`1`) or not (`0`). |
+| `bar_specificity` | Policy-strength variable: specificity of the journal's bar-graph guidance. |
+| `recommendation` | Policy-strength variable: coded recommendation category. |
+| `sample_size` | Policy-strength variable: coded sample-size category. |
+| `n_bar` | Articles with at least one bar graph for continuous data (each article counted once). |
+| `n_info` | Articles with at least one informative visualization: bar-dot, box, dot, histogram or violin plot. |
+| `n_bar_or_info` | Unique articles with bar graphs, informative visualizations, or both. Denominator for the primary analysis. |
+| `n_both` | Articles with both bar graphs and informative visualizations. |
+| `n_bar_xor_info` | Articles with exactly one category (bar graphs or informative visualizations, not both). |
+| `policy` | Whether the policy had been implemented by the publication year (`1` = adoption year or later; `0` = before adoption or no recorded adoption year). |
+| `year_policy_started` | Year the policy was adopted; missing if none recorded. |
+| `year_since_policy` | Time since adoption: `0` before adoption or if no adoption year; `1` in the adoption year; `2` the following year, and so on. |
+| `year_centered` | `year - mean(year)` across the aggregated dataset. |
+| `log_offset` | Exposure offset in applicable count models. |
 
 **Notes**
 
