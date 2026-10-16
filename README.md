@@ -53,48 +53,14 @@ files written by the previous one. All scripts use the **here** package
 for path handling, so the project should be opened as an RStudio Project
 (or `here::here()` should resolve to the repository root).
 
-  -----------------------------------------------------------------------
-  \#                      Script                  Purpose
-  ----------------------- ----------------------- -----------------------
-  1                       `2__descriptives.R`     Produces descriptive
-                                                  summary tables and
-                                                  exploratory figures.
-
-  2                       `3__models.R`           Fits the seven
-                                                  candidate Bayesian
-                                                  Poisson models (primary
-                                                  outcome: number of bar
-                                                  graphs).
-
-  3                       `4__results.R`          Loads fitted models and
-                                                  builds parameter
-                                                  summary tables
-                                                  (posterior summaries
-                                                  with ESS and R-hat) and
-                                                  the forest plot for the
-                                                  primary outcome.
-
-  4                       `5__diagnostics.R`      Produces MCMC
-                                                  diagnostics (trace,
-                                                  density, ACF plots) and
-                                                  DIC for each
-                                                  primary-outcome model,
-                                                  then collates the DIC
-                                                  comparison table.
-
-  5                       `6__sensitivity.R`      Sensitivity analyses:
-                                                  refits models 1A--6 for
-                                                  the secondary outcome
-                                                  (number of more
-                                                  informative graphs) and
-                                                  runs their summaries,
-                                                  diagnostics, DIC table
-                                                  and forest plot; also
-                                                  builds the cumulative
-                                                  rate-ratio plot.
-                                                  
-                          `99_functions.R`       Shared helper functions.  
-  -----------------------------------------------------------------------
+| Script | Purpose |
+|:---|:---|
+| `2__descriptives.R` | Produces descriptive summary tables and exploratory figures. |
+| `3__models.R` | Fits the seven candidate Bayesian Poisson models (primary outcome: number of bar graphs). |
+| `4__results.R` | Loads fitted models and builds parameter summary tables (posterior summaries with ESS and R-hat) and the forest plot for the primary outcome. |
+| `5__diagnostics.R` | Produces MCMC diagnostics (trace, density, and ACF plots) and DIC for each primary-outcome model, then collates the DIC comparison table. |
+| `6__sensitivity.R` | Conducts sensitivity analyses: refits models 1A–6 for the secondary outcome (number of more informative graphs) and runs their summaries, diagnostics, DIC table, and forest plot; also builds the cumulative rate-ratio plot. |
+| `99_functions.R` | Contains shared helper functions. |
 
 ### 0. Installing packages
 
