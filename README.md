@@ -24,7 +24,6 @@ Code for an observational study of the effect of journal editorial policies on t
 - [Script reference](#script-reference)
 - [Models](#models)
 - [Outputs](#outputs)
-- [Known quirks](#known-quirks)
 
 ## Quick start
 
@@ -34,16 +33,12 @@ Code for an observational study of the effect of journal editorial policies on t
 4. Install the required packages (developed and tested under **R 4.5.1**):
 
 ```r
-   install.packages(c(
-     "nimble", "coda", "posterior", "dplyr", "tidyr", "tidyverse", "ggplot2",
-     "readr", "purrr", "stringr", "scales", "here", "openxlsx", "ggh4x",
-     "patchwork", "fs", "viridis"
-   ))
+   install.packages(c("nimble", "coda", "posterior", "dplyr", "tidyr", "tidyverse", "ggplot2",
+                      "readr", "purrr", "stringr", "scales", "here", "openxlsx", "ggh4x",
+                      "patchwork", "fs", "viridis"))
 ```
 
-5. Run the scripts in `scripts/` in the order shown below, **in a single R session** (see [Known quirks](#known-quirks)).
-
-> **Heads up:** Models 1B, 2, 3 and 6 take roughly 10–19 hours each, so `3__models.R` and `6__sensitivity.R` are long runs. Fitted objects are saved to `results/`, so later scripts load them instead of refitting.
+5. Run the scripts in `scripts/` in the order shown below, **in a single R session**.
 
 ## Repository structure
 
@@ -182,7 +177,4 @@ For each of the 7 primary-outcome models, loads the MCMC and sample objects from
 | `results/` | Fitted samples (`.rds`), `coda` objects, summary and DIC tables (`.csv`), figures (`.png`) |
 | `diagnostics/` | Trace, density and ACF plots (`.pdf`), DIC text summaries (`.txt`) |
 
-## Known quirks
-
-- **Switching `99_functions.R` for the secondary outcome.** Before the diagnostics section of script 6, edit `99_functions.R`: uncomment the secondary-outcome lines (`base_data` with `y = n_info`, and the `dic_comparison_info.csv` `write_csv`/`message` lines in `build_dic_table()`) and comment out their primary-outcome counterparts. **Revert these before re-running scripts 3–5.**
 
