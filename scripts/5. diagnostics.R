@@ -1,4 +1,3 @@
-
 ## ===============
 ## diagnostics.R
 ## ===============
@@ -16,52 +15,51 @@ library(nimble)
 source("scripts/99_functions.R")
 #source("3_models.R")
 
-
 # ---------
 # Model 1A
 # ---------
-label_model1a_pois <- paste0("model1a_pois_", mcmc_niter %/% 1000, "k")
+label_model1A_pois <- paste0("model1A_pois_", mcmc_niter %/% 1000, "k")
 
-mcmc_list1a <- readRDS(here("results", paste0("mcmc_list_", label_model1a_pois, ".rds")))
-samples_1a  <- readRDS(here("results", paste0("samples_", label_model1a_pois, ".rds")))
-all_samples1a <- do.call(rbind, samples_1a$samples)
+mcmc_list1A <- readRDS(here("results", paste0("mcmc_list_", label_model1A_pois, ".rds")))
+samples_1A <- readRDS(here("results", paste0("samples_", label_model1A_pois, ".rds")))
+all_samples1A <- do.call(rbind, samples_1A$samples)
 
-key_params1a <- c("alpha", "beta", "gamma", "sigma_a", "sigma_b", "sigma_obs")
-labels1a <- c(alpha     = "Intercepts",
+key_params1A <- c("alpha", "beta", "gamma", "sigma_a", "sigma_b", "sigma_obs")
+labels1A <- c(alpha     = "Intercepts",
               beta      = "Time effects",
               gamma     = "Policy effects",
               sigma_a   = "SD of journal intercepts",
               sigma_b   = "SD of journal slopes",
               sigma_obs = "SD of observation-level errors")
 
-save_trace_density(mcmc_list1a, key_params1a, labels1a, label_model1a_pois, nrow_panels = 3)
-save_acf_plot(mcmc_list1a, key_params1a, labels1a, label_model1a_pois)
+save_trace_density(mcmc_list1A, key_params1A, labels1A, label_model1A_pois, nrow_panels = 3)
+save_acf_plot(mcmc_list1A, key_params1A, labels1A, label_model1A_pois)
 
 # DIC calculation
-compute_dic(samples_1a, label_model1a_pois)
+compute_dic_bar(samples_1A, label_model1A_pois)
 
 
 # ---------
 # Model 1B
 # ---------
-label_model1b_pois <- paste0("model1b_pois_", mcmc_niter %/% 1000, "k")
+label_model1B_pois <- paste0("model1B_pois_", mcmc_niter %/% 1000, "k")
 
-mcmc_list1b <- readRDS(here("results", paste0("mcmc_list_", label_model1b_pois, ".rds")))
-samples_1b  <- readRDS(here("results", paste0("samples_", label_model1b_pois, ".rds")))
-all_samples1b <- do.call(rbind, samples_1b$samples)
+mcmc_list1B <- readRDS(here("results", paste0("mcmc_list_", label_model1B_pois, ".rds")))
+samples_1B  <- readRDS(here("results", paste0("samples_", label_model1B_pois, ".rds")))
+all_samples1B <- do.call(rbind, samples_1B$samples)
 
-key_params1b <- c("alpha", "beta", "gamma", "sigma_a", "sigma_b")
-labels1b <- c(alpha   = "Intercepts",
+key_params1B <- c("alpha", "beta", "gamma", "sigma_a", "sigma_b")
+labels1B <- c(alpha   = "Intercepts",
               beta    = "Time effects",
               gamma   = "Policy effects",
               sigma_a = "SD of journal intercepts",
               sigma_b = "SD of journal time slopes")
 
-save_trace_density(mcmc_list1b, key_params1b, labels1b, label_model1b_pois, nrow_panels = 3)
-save_acf_plot(mcmc_list1b, key_params1b, labels1b, label_model1b_pois)
+save_trace_density(mcmc_list1B, key_params1B, labels1B, label_model1B_pois, nrow_panels = 3)
+save_acf_plot(mcmc_list1B, key_params1B, labels1B, label_model1B_pois)
 
 # DIC calculation
-compute_dic(samples_1b, label_model1b_pois)
+compute_dic_bar(samples_1B, label_model1B_pois)
 
 
 # --------
@@ -83,7 +81,7 @@ save_trace_density(mcmc_list2, key_params2, labels2, label_model2_pois, nrow_pan
 save_acf_plot(mcmc_list2, key_params2, labels2, label_model2_pois)
 
 # DIC calculation
-compute_dic(samples_2,  label_model2_pois)
+compute_dic_bar(samples_2,  label_model2_pois)
 
 
 # --------
@@ -107,7 +105,7 @@ save_trace_density(mcmc_list3, key_params3, labels3, label_model3_pois, nrow_pan
 save_acf_plot(mcmc_list3, key_params3, labels3, label_model3_pois)
 
 # DIC calculation
-compute_dic(samples_3, label_model3_pois)
+compute_dic_bar(samples_3, label_model3_pois)
 
 
 # --------
@@ -129,7 +127,7 @@ save_trace_density(mcmc_list4, key_params4, labels4, label_model4_pois, nrow_pan
 save_acf_plot(mcmc_list4, key_params4, labels4, label_model4_pois)
 
 # DIC calculation
-compute_dic(samples_4, label_model4_pois)
+compute_dic_bar(samples_4, label_model4_pois)
 
 
 # --------
@@ -152,7 +150,7 @@ save_trace_density(mcmc_list5, key_params5, labels5, label_model5_pois, nrow_pan
 save_acf_plot(mcmc_list5, key_params5, labels5, label_model5_pois)
 
 # DIC calculation
-compute_dic(samples_5, label_model5_pois)
+compute_dic_bar(samples_5, label_model5_pois)
 
 
 # --------
@@ -176,10 +174,10 @@ save_trace_density(mcmc_list6, key_params6, labels6, label_model6_pois, nrow_pan
 save_acf_plot(mcmc_list6, key_params6, labels6, label_model6_pois)
 
 # DIC calculation
-compute_dic(samples_6, label_model6_pois)
+compute_dic_bar(samples_6, label_model6_pois)
 
 
 # -------------------------------------------------------
 # DIC comparison table — parse all .txt files and collate 
 # -------------------------------------------------------
-build_dic_table()
+build_dic_bar_table()

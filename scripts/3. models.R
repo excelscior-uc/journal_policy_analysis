@@ -37,7 +37,7 @@ mcmc_seeds <- c(20260216, 20260217, 20260218, 20260219)
 # -------------------------------------------------------------
 # Model 1A: Base Poisson with observation-level overdispersion
 # -------------------------------------------------------------
-model1a_overdisp_code <- nimbleCode({
+model1A_overdisp_code <- nimbleCode({
   for (i in 1:N) {
     epsilon[i] ~ dnorm(0, sd = sigma_obs)
     
@@ -62,7 +62,7 @@ model1a_overdisp_code <- nimbleCode({
   sigma_obs ~ T(dnorm(0, sd = 0.30), 0, ) 
 })
 
-inits_model1a <- function() {
+inits_model1A <- function() {
   list(alpha     = rnorm(1, 3.5, 0.1),
        beta      = rnorm(1, -0.04, 0.01),
        gamma     = rnorm(1, 0, 0.05),
@@ -74,20 +74,20 @@ inits_model1a <- function() {
        epsilon   = rnorm(base_constants$N, 0, 0.1))
 }
 
-label_model1a <- paste0("model1a_pois_", mcmc_niter %/% 1000, "k")
+label_model1A <- paste0("model1A_pois_", mcmc_niter %/% 1000, "k")
 
-res1a <- build_and_run_pois(code      = model1a_overdisp_code,
+res1A <- build_and_run_pois(code      = model1A_overdisp_code,
                             data      = base_data,
                             constants = base_constants,
-                            inits_fn  = inits_model1a,
+                            inits_fn  = inits_model1A,
                             monitors  = c("alpha", "beta", "gamma", "sigma_a", "sigma_b", "sigma_obs", "a", "b", "loglik"),
-                            label     = label_model1a) # Duration: 00:18:33 (hh:mm:ss)
+                            label     = label_model1A) 
 
 
 # ----------------------------------------------
 # Model 1B: Base Poisson without overdispersion
 # ----------------------------------------------
-model1b_code <- nimbleCode({
+model1B_code <- nimbleCode({
   for (i in 1:N) {
     y[i] ~ dpois(mu[i])
     
@@ -110,7 +110,7 @@ model1b_code <- nimbleCode({
   sigma_b ~ T(dnorm(0, sd = 10), 0, )
 })
 
-inits_model1b <- function() {
+inits_model1B <- function() {
   list(alpha   = rnorm(1, 3.5, 0.1),
        beta    = rnorm(1, -0.04, 0.01),
        gamma   = rnorm(1, 0, 0.05),
@@ -120,14 +120,14 @@ inits_model1b <- function() {
        b       = rnorm(base_constants$J, -0.04, 0.03))
 }
 
-label_model1b <- paste0("model1b_pois_", mcmc_niter %/% 1000, "k")
+label_model1B <- paste0("model1B_pois_", mcmc_niter %/% 1000, "k")
 
-res1b <- build_and_run_pois(code      = model1b_code,
+res1B <- build_and_run_pois(code      = model1B_code,
                             data      = base_data,
                             constants = base_constants,
-                            inits_fn  = inits_model1b,
+                            inits_fn  = inits_model1B,
                             monitors  = c("alpha", "beta", "gamma", "sigma_a", "sigma_b", "a", "b", "loglik"),
-                            label     = label_model1b) # Duration: 18:32:36 (hh:mm:ss)
+                            label     = label_model1B) 
 
 
 # -------------------------------------------------------
@@ -169,7 +169,7 @@ res2 <- build_and_run_pois(code      = model2_code,
                            constants = base_constants,
                            inits_fn  = inits_model2,
                            monitors  = c("alpha", "beta", "gamma", "sigma_a", "a", "loglik"),
-                           label     = label_model2_pois) # Duration: 09:42:10 (hh:mm:ss)
+                           label     = label_model2_pois) 
 
 
 # ------------------------------------------------------
@@ -231,7 +231,7 @@ res3 <- build_and_run_pois(code      = model3_code,
                            constants = constants3,
                            inits_fn  = inits_model3,
                            monitors  = c("A", "beta", "gamma", "sigma_a", "sigma_b", "sigma_f", "alpha_f", "a", "b", "mu", "loglik"),
-                           label     = label_model3) # Duration: 14:04:24 (hh:mm:ss)
+                           label     = label_model3) 
 
 # ---------------------------------------------------------
 # Model 4: Gradual policy effect (policy_year), fixed slope
@@ -280,7 +280,7 @@ res4 <- build_and_run_pois(code      = model4_code,
                            constants = base_constants4,
                            inits_fn  = inits_model4,
                            monitors  = c("alpha", "beta", "gamma", "sigma_a", "a", "loglik"),
-                           label     = label_model4) # Duration: 00:07:00 (hh:mm:ss)
+                           label     = label_model4) 
 
 
 # -------------------------------------------------------
@@ -334,7 +334,7 @@ res5 <- build_and_run_pois(code      = model5_code,
                            constants = base_constants5,
                            inits_fn  = inits_model5,
                            monitors  = c("alpha", "beta", "gamma", "sigma_a", "sigma_b", "a", "b", "loglik"),
-                           label     = label_model5) # Duration: 00:20:50 (hh:mm:ss)
+                           label     = label_model5) 
 
 
 # ------------------------------------------------
@@ -398,8 +398,4 @@ res6 <- build_and_run_pois(code      = model6_code,
                            constants = constants6,
                            inits_fn  = inits_model6,
                            monitors  = c("alpha", "beta", "gamma", "sigma_a", "sigma_b", "sigma_f", "a", "b", "alpha_f", "loglik"),
-                           label     = label_model6) # Duration: 19:18:47 (hh:mm:ss)
-
-
-
-
+                           label     = label_model6) 

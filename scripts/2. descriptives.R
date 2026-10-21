@@ -1,5 +1,4 @@
 
-
 ## ================
 ## descriptive.R
 ## ================
@@ -10,6 +9,7 @@ library(tidyr)
 library(scales)
 library(openxlsx)
 library(here)
+library(viridis)
 
 df_descriptive <- read.csv(here("data", "df_descriptive.csv"))
 dim(df_descriptive)
@@ -234,48 +234,58 @@ no_prepolicy
 # -------------------------------------------
 # Policy timeline grouped by adoption pattern
 # -------------------------------------------
+
+study_end <- 2025   # last year of the study period
+
 policy_timeline <- df_descriptive %>%
   filter(policy_ref == 1) %>%
   group_by(journal) %>%
   summarise(
     first_observed_year = min(year, na.rm = TRUE),
-    last_observed_year = max(year, na.rm = TRUE),
-    n_articles = sum(n_bar_or_info, na.rm = TRUE),
+    last_observed_year  = max(year, na.rm = TRUE),
+    n_articles          = sum(n_bar_or_info, na.rm = TRUE),
+    
+    # how many actual pre-policy years exist in the data
+    n_pre_obs = sum(policy == 0, na.rm = TRUE),
     
     adoption_year = {
-      adoption_candidates <- year[
-        policy == 1 &
-          !is.na(policy) &
-          !is.na(year_since_policy)] -
-        year_since_policy[
-          policy == 1 &
-            !is.na(policy) &
-            !is.na(year_since_policy)] + 1
-      
-      if (length(adoption_candidates) == 0 ||
-          all(is.na(adoption_candidates))) {
-        NA_real_
+      idx <- policy == 1 & !is.na(policy) & !is.na(year_since_policy)
+      if (any(idx)) {
+        min(year[idx] - year_since_policy[idx] + 1, na.rm = TRUE)
       } else {
-        min(adoption_candidates, na.rm = TRUE)
+        idx2 <- policy == 1 & !is.na(policy)
+        if (any(idx2)) min(year[idx2], na.rm = TRUE)
+        else min(year, na.rm = TRUE)
       }
     },
     .groups = "drop") %>%
   filter(!is.na(adoption_year), is.finite(adoption_year)) %>%
   mutate(
-    n_pre_policy_years = pmax(0, adoption_year - first_observed_year))
+    n_pre_policy_years = if_else(
+      n_pre_obs == 0,
+      0,
+      pmax(0, adoption_year - first_observed_year)))
 
+# Journals are grouped by adoption year, pre-policy length AND last observed year,
+# so discontinued journals are not merged with journals observed until the end.
 policy_patterns <- policy_timeline %>%
-  group_by(adoption_year, n_pre_policy_years) %>%
+  group_by(adoption_year, n_pre_policy_years, last_observed_year) %>%
   summarise(
     first_observed_year = min(first_observed_year),
-    last_observed_year = max(last_observed_year),
-    n_journals = n_distinct(journal),
-    n_articles = sum(n_articles),
+    n_journals          = n_distinct(journal),
+    n_articles          = sum(n_articles),
     .groups = "drop") %>%
-  arrange(adoption_year, n_pre_policy_years) %>%
+  mutate(discontinued = last_observed_year < study_end) %>%
+  # 1) adoption year, earliest to latest
+  # 2) within the same adoption year, longest to shortest pre-policy observation
+  # 3) within the same pre-policy length, journals observed until the end first
+  arrange(adoption_year, desc(n_pre_policy_years), desc(last_observed_year)) %>%
   mutate(
-    pattern_id = paste0("pattern_", row_number()),
-    pattern_id = factor(pattern_id, levels = rev(pattern_id)))
+    pattern_id = paste0("pattern_", row_number()))
+
+# First row of the table appears at the TOP of the plot.
+# scale_y_discrete() places the first limit at the bottom, so reverse the order.
+y_order_bottom_to_top <- rev(policy_patterns$pattern_id)
 
 y_labels <- setNames(
   paste0(
@@ -306,21 +316,38 @@ p_policy_timeline <- ggplot(policy_patterns, aes(y = pattern_id)) +
   
   geom_point(
     aes(x = adoption_year),
-    color = "#D46A4C",  size = 2.5) +
+    color = "#D46A4C", size = 2.5) +
+  
+  # Marker at the end of the line for journals that stopped before the end of the study
+  geom_point(
+    data = subset(policy_patterns, discontinued),
+    aes(x = last_observed_year, color = "Discontinued"),
+    shape = 16, size = 3) +
   
   scale_color_manual(
-    values = c("Post-policy" = "#1F7A7A", "Pre-policy" = "#B0B0B0")) +
+    values = c(
+      "Pre-policy"   = "#440154",
+      "Post-policy"  = "#21918c",
+      "Discontinued" = "#666666"),
+    breaks = c("Pre-policy", "Post-policy", "Discontinued")) +
   
-  scale_linewidth_continuous(trans = "sqrt", range = c(0.5, 3),  guide = "none") +
+  guides(color = guide_legend(
+    override.aes = list(
+      linewidth = c(2, 2, NA),
+      shape     = c(NA, NA, 16),
+      size      = c(NA, NA, 3)))) +
+  
+  scale_linewidth_continuous(trans = "sqrt", range = c(0.5, 3), guide = "none") +
   
   scale_x_continuous(
     expand = c(0, 0),
     breaks = seq(
       min(policy_patterns$first_observed_year, na.rm = TRUE),
-      max(policy_patterns$last_observed_year, na.rm = TRUE),
+      max(policy_patterns$last_observed_year, study_end, na.rm = TRUE),
       by = 1)) +
   
   scale_y_discrete(
+    limits = y_order_bottom_to_top,
     labels = y_labels,
     expand = c(0.02, 0.02)) +
   
@@ -368,13 +395,11 @@ df_stacked_field <- df_descriptive %>%
     pct_both = n_both / n_total * 100,
     pct_others = n_others / n_total * 100) %>%
   arrange(desc(pct_bar_only))
-
 df_labels_field <- df_stacked_field %>%
   mutate(
     field = factor(field, levels = field),
     field_id = as.numeric(field)) %>%
   select(field, field_id, n_total)
-
 df_stacked_field_long <- df_stacked_field %>%
   mutate(field = factor(field, levels = field)) %>%
   pivot_longer(cols = starts_with("pct_"), names_to = "category", values_to = "percentage") %>%
@@ -382,14 +407,12 @@ df_stacked_field_long <- df_stacked_field %>%
     category = factor(
       category,
       levels = c("pct_bar_only", "pct_both", "pct_info_only", "pct_others"),
-      labels = c("Bar only", "Both bar & informative", "Informative only", "Others")))
-
+      labels = c("Bar only", "Both bar & informative", "Informative only", "Excluded")))
 bar_height <- 0.65
-
 df_stacked_field_rect <- df_stacked_field_long %>%
   arrange(
     field, factor(category,
-      levels = c("Bar only", "Both bar & informative", "Informative only", "Others"))) %>%
+                  levels = c("Bar only", "Both bar & informative", "Informative only", "Excluded"))) %>%
   group_by(field) %>%
   mutate(
     xmin = lag(cumsum(percentage), default = 0),
@@ -398,7 +421,6 @@ df_stacked_field_rect <- df_stacked_field_long %>%
     ymin = field_id - bar_height / 2,
     ymax = field_id + bar_height / 2) %>%
   ungroup()
-
 df_both_checker <- df_stacked_field_rect %>%
   filter(category == "Both bar & informative", xmax > xmin) %>%
   group_by(field) %>%
@@ -437,41 +459,37 @@ df_both_checker <- df_stacked_field_rect %>%
       select(xmin, xmax, ymin, ymax)
   }) %>%
   ungroup()
-
 legend_y <- max(df_labels_field$field_id) + 0.7
-
 df_legend <- data.frame(
-  label = c("Bar only", "Both bar & informative", "Informative only", "Others"),
+  label = c("Bar only", "Both bar & informative", "Informative only", "Excluded"),
   x = c(0, 20, 55, 86), y = legend_y,
-  fill = c("#D9897B","#D9897B", "#A8C5E8","#DCE0E4"))
-
+  fill = c("#440154", "#440154", "#21918c", "#DCE0E4"))
 df_legend_both_checker <- expand.grid(
   x_id = 1:6, y_id = 1:3) %>%
   mutate(xmin = 20 + 0.25 + (x_id - 1) * 0.6, xmax = xmin + 0.6,
          ymin = legend_y - 0.12 + (y_id - 1) * 0.08, ymax = ymin + 0.08) %>%
   filter((x_id + y_id) %% 2 == 0)
-
 stacked_by_field <- ggplot() +
   geom_rect(
     data = df_stacked_field_rect,
     aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = category)) +
   geom_rect(
     data = df_both_checker,
-    aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "#A8C5E8") +
+    aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "#21918c") +
   geom_text(
     data = df_labels_field, aes(x = 102, y = field_id, label = paste0("n = ", scales::comma(n_total))),
     size = 4, hjust = 0) +
   geom_rect(data = df_legend, aes(xmin = x, xmax = x + 4, ymin = y - 0.12, ymax = y + 0.12),
-    fill = df_legend$fill, inherit.aes = FALSE) +
+            fill = df_legend$fill, inherit.aes = FALSE) +
   geom_rect(
     data = df_legend_both_checker,
     aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
-    fill = "#A8C5E8", inherit.aes = FALSE) +
+    fill = "#21918c", inherit.aes = FALSE) +
   geom_text(data = df_legend, aes(x = x + 5, y = y, label = label),
-    hjust = 0, size = 3.5, inherit.aes = FALSE) +
+            hjust = 0, size = 3.5, inherit.aes = FALSE) +
   scale_fill_manual(
-    values = c("Bar only" = "#D9897B", "Both bar & informative" = "#D9897B",
-               "Informative only" = "#A8C5E8", "Others" = "#DCE0E4"), guide = "none") +
+    values = c("Bar only" = "#440154", "Both bar & informative" = "#440154",
+               "Informative only" = "#21918c", "Excluded" = "#DCE0E4"), guide = "none") +
   scale_x_continuous(
     limits = c(0, 114),
     breaks = seq(0, 100, by = 25),
@@ -489,7 +507,6 @@ stacked_by_field <- ggplot() +
     panel.grid.minor = element_blank(),
     axis.text.y = element_text(size = 12),
     plot.margin = margin(t = 2, r = 15, b = 5, l = 5))
-
 stacked_by_field
 
 # Save plot
@@ -526,14 +543,11 @@ prepare_plot_data <- function(data) {
         levels = c("n_bar_only", "n_info_only", "n_both", "n_others")),
       proportion = ifelse(n_total > 0, count / n_total, NA_real_))
 }
-
 # Split policy vs non-policy journals
 policy_df <- df_descriptive %>%
   filter(policy_ref == 1)
-
 nonpolicy_df <- df_descriptive %>%
   filter(policy_ref == 0)
-
 # Total articles by field: policy journals
 field_totals_policy <- policy_df %>%
   mutate(
@@ -548,7 +562,6 @@ field_totals_policy <- policy_df %>%
     .groups = "drop") %>%
   mutate(
     field_label = paste0(field, "\n(n = ", comma(total_articles), ")"))
-
 # Total articles by field: non-policy journals
 field_totals_nonpolicy <- nonpolicy_df %>%
   mutate(
@@ -562,20 +575,17 @@ field_totals_nonpolicy <- nonpolicy_df %>%
     total_articles = sum(n_total, na.rm = TRUE),  .groups = "drop") %>%
   mutate(
     field_label = paste0(field, "\n(n = ", comma(total_articles), ")"))
-
 # Prepare plotting datasets
 policy_long <- prepare_plot_data(policy_df) %>%
   left_join(
     field_totals_policy %>%
       select(field, field_label),
     by = "field")
-
 nonpolicy_long <- prepare_plot_data(nonpolicy_df) %>%
   left_join(
     field_totals_nonpolicy %>%
       select(field, field_label),
     by = "field")
-
 # Policy adoption years
 # Each vertical line represents an adoption year.
 # Line thickness is proportional to the number of journals adopting in that year.
@@ -589,13 +599,18 @@ policy_adoption_years <- policy_df %>%
   left_join(
     field_totals_policy %>%
       select(field, field_label), by = "field")
-trend_colors <- c(n_bar_only  = "#B23A2B", n_info_only = "#2F5DA8", n_both = "#1F7A4C", n_others = "#404040")
-
+# Updated colors – higher contrast within the viridis family
+trend_colors <- c(
+  n_bar_only  = "#440154",   # deep purple  (Bar only)
+  n_info_only = "#35B779",   # green        (Informative only)
+  n_both      = "#31688E",   # blue         (Both)
+  n_others    = "#B0B0B0"    # light gray   (Excluded)
+)
 # Plot function
 make_trend_plot <- function(
     plot_data, adoption_data = NULL,
     year_breaks, x_start, x_end, trend_colors, 
-    policy_line_color = "#9370DB" , ncol = 3, base_size = 16) {
+    policy_line_color = "#D46A4C", ncol = 3, base_size = 16) {
   
   p <- ggplot(plot_data, aes(x = year, y = proportion, color = graph_type, group = graph_type))
   
@@ -605,8 +620,8 @@ make_trend_plot <- function(
       geom_vline(
         data = adoption_data,
         aes(xintercept = adoption_year,
-          linewidth = n_journals_started,
-          linetype = "Policy adoption"), inherit.aes = FALSE,
+            linewidth = n_journals_started,
+            linetype = "Policy adoption"), inherit.aes = FALSE,
         color = policy_line_color,  alpha = 0.8, show.legend = FALSE)
   }
   
@@ -624,16 +639,20 @@ make_trend_plot <- function(
       values = trend_colors,
       labels = c(
         n_bar_only  = "Bar only", n_info_only = "Informative only",
-        n_both      = "Both", n_others = "Others")) +
+        n_both      = "Both", n_others = "Excluded")) +
     scale_alpha_manual(
-      values = c(n_bar_only  = 0.80, n_info_only = 0.80, n_both  = 0.80, 
-                 n_others = 0.80), guide = "none") +
+      values = c(
+        n_bar_only  = 0.85,
+        n_info_only = 0.85,
+        n_both      = 0.85,
+        n_others    = 0.45),
+      guide = "none") +
     guides(color = guide_legend(order = 1,
-        override.aes = list(
-          alpha = c(0.80, 0.80, 0.80, 0.80),
-          linewidth = 1.2, size = 2)),
-      linetype = guide_legend(order = 2),
-      linewidth = "none") +
+                                override.aes = list(
+                                  alpha = c(0.85, 0.85, 0.85, 0.45),
+                                  linewidth = 1.2, size = 2)),
+           linetype = guide_legend(order = 2),
+           linewidth = "none") +
     labs(x = NULL, y = "Percentage of articles", color = NULL) +
     theme_minimal(base_size = base_size) +
     theme(
@@ -644,13 +663,10 @@ make_trend_plot <- function(
       panel.grid.minor   = element_blank(),
       axis.text.x = element_text(angle = 45, hjust = 1))
 }
-
 # Axis settings
 year_breaks <- seq(min(df_descriptive$year), max(df_descriptive$year), by = 3)
-
 x_start <- min(df_descriptive$year)
 x_end <- max(df_descriptive$year)
-
 # Create policy plot
 policy_plot <- make_trend_plot(
   plot_data     = policy_long,
@@ -659,9 +675,7 @@ policy_plot <- make_trend_plot(
   x_start       = x_start,
   x_end         = x_end,
   trend_colors  = trend_colors)
-
 policy_plot
-
 # Create non-policy plot
 nonpolicy_plot <- make_trend_plot(
   plot_data     = nonpolicy_long,
@@ -670,11 +684,8 @@ nonpolicy_plot <- make_trend_plot(
   x_start       = x_start,
   x_end         = x_end,
   trend_colors  = trend_colors)
-
 nonpolicy_plot
 
 # Save plots
 ggsave(here("results", "policy_by_year.png"), policy_plot, width = 14, height = 12, dpi = 300)
 ggsave(here("results", "nonpolicy_by_year.png"), nonpolicy_plot, width = 14, height = 10, dpi = 300)
-
-

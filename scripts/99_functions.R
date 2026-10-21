@@ -1,5 +1,3 @@
-
-
 # ----------------
 # Helper functions
 # ----------------
@@ -225,20 +223,22 @@ dim(df_sample)
 df_sample$journal_idx <- as.integer(factor(df_sample$journal))
 df_sample$field_idx <- as.integer(factor(df_sample$field))
 
-# for primary outcome
-base_data <- list(y = df_sample$n_bar, log_offset = df_sample$log_offset, 
-                  policy = df_sample$policy, policy_year = df_sample$year_since_policy,
-                  year_centered = df_sample$year_centered, journal = df_sample$journal_idx)
+# Outcome-specific data for the DIC log-likelihoods.
+# Named dic_data_* so they are NOT overwritten by the nimble `base_data`
+# defined in 3__models.R / 6__sensitivity.R.
+make_dic_data <- function(y) {
+  list(y = y, log_offset = df_sample$log_offset,
+       policy = df_sample$policy, policy_year = df_sample$year_since_policy,
+       year_centered = df_sample$year_centered, journal = df_sample$journal_idx)
+}
 
-# for secondary outcome
-#base_data <- list(y = df_sample$n_info, log_offset = df_sample$log_offset, 
-#                  policy = df_sample$policy, policy_year = df_sample$year_since_policy,
-#                  year_centered = df_sample$year_centered, journal = df_sample$journal_idx)
+# primary outcome (n_bar: # of bar graphs)
+dic_data_bar   <- make_dic_data(df_sample$n_bar)
+dic_data3_bar  <- dic_data6_bar  <- c(dic_data_bar,  list(field = df_sample$field_idx))
 
-base_constants <- list(N = nrow(df_sample), J = max(df_sample$journal_idx))
-
-data3 <- data6 <- c(base_data, list(field = df_sample$field_idx))
-constants3 <- constants6 <- c(base_constants, list(F = max(df_sample$field_idx)))
+# secondary outcome (n_info: # of informative graphs)
+dic_data_info  <- make_dic_data(df_sample$n_info)
+dic_data3_info <- dic_data6_info <- c(dic_data_info, list(field = df_sample$field_idx))
 
 # ----------------------------------------------------------------
 # Log-likelihood helpers
@@ -338,32 +338,45 @@ ll_poisson_nested6 <- function(params, data) {
 #   pD     = D_bar - D_hat   (effective number of parameters)
 #   DIC    = D_bar + pD  =  2*D_bar - D_hat
 #
-# Arguments:
-#   samples_obj   nimble samples object  (list with $samples element,
+# Use the outcome-specific wrappers:
+#   compute_dic_bar()   primary   outcome (# bar graphs)         -> n_bar data
+#   compute_dic_info()  secondary outcome (# informative graphs) -> n_info data
+#
+# Arguments (both wrappers):
+#   samples_obj   nimble samples object (list with $samples element,
 #                 each element being a matrix [iter x params])
-#   label         character label used for the saved .rds / .txt file
-#   ll_fun        log-likelihood function  (one of the helpers above)
-#   data          named list of data passed to ll_fun
+#   label         label of the model run, e.g. "model1A_pois_60k" (bar) or
+#                 "model1A_info_pois_60k" (info); also names the saved files
+#   ll_fun, data  optional overrides (defaults are auto-selected from label)
 # ----------------------------------------------------------------
-compute_dic <- function(samples_obj, label, ll_fun = NULL,  data   = NULL) {
+.compute_dic <- function(samples_obj, label, outcome = c("bar", "info"),
+                         ll_fun = NULL, data = NULL) {
   
-  # ---- auto-select ll_fun and data from label ----
+  outcome <- match.arg(outcome)
+  
+  # ---- label must match the outcome (table builders discover files by "_info_") ----
+  has_info_tag <- grepl("_info_", label, fixed = TRUE)
+  if (outcome == "info" && !has_info_tag)
+    stop("compute_dic_info(): label '", label, "' must contain '_info_'.")
+  if (outcome == "bar" && has_info_tag)
+    stop("compute_dic_bar(): label '", label, "' contains '_info_'; use compute_dic_info().")
+  
+  # ---- auto-select ll_fun and data from label + outcome ----
   if (is.null(ll_fun)) {
-    if (grepl("model1a|model1b|model1[._]0|model1[._]1", label, ignore.case = TRUE)) {
-      ll_fun <- ll_poisson_base
-      data   <- base_data
+    d_base  <- if (outcome == "info") dic_data_info  else dic_data_bar
+    d_nest3 <- if (outcome == "info") dic_data3_info else dic_data3_bar
+    d_nest6 <- if (outcome == "info") dic_data6_info else dic_data6_bar
+    
+    if (grepl("model1[ab]|model1[._][01]", label, ignore.case = TRUE)) {
+      ll_fun <- ll_poisson_base;    data <- d_base
     } else if (grepl("model2", label, ignore.case = TRUE)) {
-      ll_fun <- ll_poisson_base
-      data   <- base_data
+      ll_fun <- ll_poisson_base;    data <- d_base
     } else if (grepl("model3", label, ignore.case = TRUE)) {
-      ll_fun <- ll_poisson_nested3
-      data   <- data3
+      ll_fun <- ll_poisson_nested3; data <- d_nest3
     } else if (grepl("model4|model5", label, ignore.case = TRUE)) {
-      ll_fun <- ll_poisson_base
-      data   <- base_data
+      ll_fun <- ll_poisson_base;    data <- d_base
     } else if (grepl("model6", label, ignore.case = TRUE)) {
-      ll_fun <- ll_poisson_nested6
-      data   <- data6
+      ll_fun <- ll_poisson_nested6; data <- d_nest6
     } else {
       stop("compute_dic: could not auto-detect ll_fun for label '", label,
            "'. Supply ll_fun and data explicitly.")
@@ -420,17 +433,35 @@ compute_dic <- function(samples_obj, label, ll_fun = NULL,  data   = NULL) {
 }
 
 
+# Primary outcome: # of bar graphs
+compute_dic_bar  <- function(samples_obj, label, ll_fun = NULL, data = NULL)
+  .compute_dic(samples_obj, label, "bar", ll_fun, data)
+
+# Secondary outcome: # of informative graphs
+compute_dic_info <- function(samples_obj, label, ll_fun = NULL, data = NULL)
+  .compute_dic(samples_obj, label, "info", ll_fun, data)
+
+
 # ----------------------------------------------------------------
-# Collate all saved DIC results into one comparison table
-#   Call this AFTER all compute_dic() calls have run.
+# Collate saved DIC results into a comparison table.
+#   Call AFTER all compute_dic() calls have run.
+#   Primary   outcome (bar graphs)         -> build_dic_bar_table()
+#   Secondary outcome (informative graphs) -> build_dic_info_table()
+#   Labels containing "_info_" belong to the secondary outcome.
 # ----------------------------------------------------------------
-build_dic_table <- function(labels = NULL) {
+.build_dic_table <- function(labels, outcome = c("bar", "info")) {
+  outcome  <- match.arg(outcome)
+  out_csv  <- here("results", paste0("dic_comparison_", outcome, ".csv"))
   
   if (is.null(labels)) {
-    # auto-discover from results/ folder
+    # auto-discover from results/ folder, restricted to this outcome
     rds_files <- list.files(here("results"), pattern = "^dic_.*\\.rds$", full.names = TRUE)
     labels    <- sub("^dic_", "", tools::file_path_sans_ext(basename(rds_files)))
+    is_info   <- grepl("_info_", labels, fixed = TRUE)
+    labels    <- if (outcome == "info") labels[is_info] else labels[!is_info]
   }
+  
+  if (length(labels) == 0L) stop("No DIC results found for outcome: ", outcome)
   
   dic_list <- lapply(labels, function(lbl) {
     path <- here("results", paste0("dic_", lbl, ".rds"))
@@ -449,9 +480,13 @@ build_dic_table <- function(labels = NULL) {
            across(where(is.numeric), ~ round(.x, 3)))
   
   print(tbl, row.names = FALSE)
-  write_csv(tbl, here("results", "dic_comparison_bar.csv"))
-  message("DIC comparison table saved to results/DIC_comparison_bar.csv")
-  #write_csv(tbl, here("results", "dic_comparison_info.csv"))
-  #message("DIC comparison table saved to results/DIC_comparison_info.csv")
+  write_csv(tbl, out_csv)
+  message("DIC comparison table saved to ", out_csv)
   invisible(tbl)
 }
+
+# Primary outcome: # of bar graphs -> results/dic_comparison_bar.csv
+build_dic_bar_table  <- function(labels = NULL) .build_dic_table(labels, "bar")
+
+# Secondary outcome: # of informative graphs -> results/dic_comparison_info.csv
+build_dic_info_table <- function(labels = NULL) .build_dic_table(labels, "info")
