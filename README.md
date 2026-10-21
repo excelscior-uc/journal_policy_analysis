@@ -9,6 +9,9 @@ Robert Schulz<sup>1</sup>, Teshome K. Deressa<sup>2,3</sup>, Adrian Barnett<sup>
 <sup>5</sup> *SYNLAB MVZ Berlin GmbH, Berlin, Germany*
 
 ---
+- **Preregistration:** [Open the preregistration](https://osf.io/tcyxg/overview)
+- **Interactive dashboard:** [View the dashboard](https://excelscior-uc.github.io/journal-policy-dashboard/)
+---
 
 Code for an observational study evaluating whether journal editorial policies reduce the inappropriate presentation of continuous data with bar graphs and increase the use of more informative graphical displays. The analysis uses Bayesian hierarchical Poisson models fitted with the **nimble** package.
 
