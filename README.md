@@ -11,6 +11,7 @@ Robert Schulz<sup>1</sup>, Teshome K. Deressa<sup>2,3</sup>, Adrian Barnett<sup>
 ---
 - **Interactive dashboard:** [View the dashboard](https://excelscior-uc.github.io/journal-policy-dashboard/)
 - **Preregistration:** [Open the preregistration](https://osf.io/tcyxg/overview)
+- **Zenodo:** [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23677882.svg)](https://doi.org/10.5281/zenodo.23677882)
 ---
 
 Code for an observational study evaluating whether journal editorial policies reduce the inappropriate presentation of continuous data with bar graphs and increase the use of more informative graphical displays. The analysis uses Bayesian hierarchical Poisson models fitted with the **nimble** package.
