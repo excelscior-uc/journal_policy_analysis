@@ -14,7 +14,7 @@ Robert Schulz<sup>1</sup>, Teshome K. Deressa<sup>2,3</sup>, Adrian Barnett<sup>
 - **Zenodo:** [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23677882.svg)](https://doi.org/10.5281/zenodo.23677882)
 ---
 
-Code for an observational study evaluating whether journal editorial policies reduce the inappropriate presentation of continuous data with bar graphs and increase the use of more informative graphical displays. The analysis uses Bayesian hierarchical Poisson models fitted with the **nimble** package.
+Code and supplementary information for an observational study evaluating whether journal editorial policies reduce the inappropriate presentation of continuous data with bar graphs and increase the use of more informative graphical displays. The analysis uses Bayesian hierarchical Poisson models fitted with the **nimble** package.
 
 - **Primary outcome:** number of articles with bar graphs for continuous data (`n_bar`)
 - **Secondary outcome:** number of articles with more informative graphs (`n_info`)
