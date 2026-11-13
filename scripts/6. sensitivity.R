@@ -702,6 +702,7 @@ build_dic_info_table()
 ## 4. FOREST PLOT
 # ----------------------------------------------------------
 # Forest plot for main effects (time + policy) - per 5 years
+# Best model overall (lowest DIC across all seven) highlighted
 # ----------------------------------------------------------
 
 # ---- Model names -------------------------------------------------------------
@@ -711,7 +712,7 @@ model_names <- tibble(
     "Model 1A: Base Poisson model",   # with overdispersion
     "Model 1B: Base Poisson model",   # without overdispersion
     "Model 2: Policy leakage",
-    "Model 3: Field specific hierarchy",
+    "Model 3: Field-specific hierarchy",
     "Model 4: Base Poisson model",
     "Model 5: Journal specific trend",
     "Model 6: Field specific hierarchy"),
@@ -798,13 +799,15 @@ x_labels <- trimws(format(x_breaks, nsmall = 1))
 top_type    <- "Gradual change"    # panel (a)
 bottom_type <- "Step change"       # panel (b)
 
-# Rank models by DIC within each panel (rank 1 = lowest DIC = top of panel)
+# Rank models by DIC within each panel (rank 1 = lowest DIC = top of panel).
+# best_overall flags the single model with the lowest DIC across ALL models.
 model_pos <- effects %>%
   distinct(Model, model_label, change_type, DIC) %>%
   group_by(change_type) %>%
   arrange(DIC, .by_group = TRUE) %>%
   mutate(rank = row_number()) %>%
-  ungroup()
+  ungroup() %>%
+  mutate(best_overall = DIC == min(DIC))
 
 n_a <- sum(model_pos$change_type == top_type)
 n_b <- sum(model_pos$change_type == bottom_type)
@@ -829,8 +832,14 @@ plot_data <- effects %>%
   left_join(select(model_pos, Model, y_base), by = "Model") %>%
   mutate(y_pos = y_base + if_else(effect == "Time effect (per 5 years)", 0.16, -0.16))
 
-y_breaks <- model_pos$y_base
-y_labels <- model_pos$model_label
+# Single best model overall
+best_row <- model_pos %>% filter(best_overall)
+
+# Y-axis labels: sorted bottom-to-top so the colour vector matches the label order
+ord      <- order(model_pos$y_base)
+y_breaks <- model_pos$y_base[ord]
+y_labels <- model_pos$model_label[ord]
+y_cols   <- if_else(model_pos$best_overall[ord], "#1B7F3B", "grey30")
 
 # One arrow per panel: from that panel's best model (top row) to its worst (bottom row)
 arrow_df <- model_pos %>%
@@ -845,6 +854,7 @@ dir_gap  <- (x_max - x_min) * 0.015    # small buffer around RR = 1
 
 col_time   <- "#0072B2"
 col_policy <- "#E69F00"
+col_band   <- "#E3F1E3"                # light green band behind the best model's row
 
 # ---- Per-panel legend --------------------------------------------------------
 # Right-aligned at x_max. Offsets are fractions of the x-axis range, so the
@@ -872,14 +882,19 @@ panel_legend <- function(y) {
     annotate("point", x = x_pol_key, y = y, colour = col_policy,
              size = 2.4, shape = 16),
     annotate("text", x = x_pol_txt, y = y, label = "Policy effect",
-             hjust = 1, vjust = 0.5, size = 11 / .pt, colour = "grey20")
-  )
+             hjust = 1, vjust = 0.5, size = 11 / .pt, colour = "grey20"))
 }
 
 # ---- Forest plot (both panels) -----------------------------------------------
 forest <- ggplot(
   plot_data,
   aes(x = rate_ratio, y = y_pos, xmin = rr_low, xmax = rr_high, colour = effect)) +
+  
+  # light background band behind the best model's row (drawn first = at the back)
+  geom_rect(data = best_row, inherit.aes = FALSE,
+            aes(xmin = x_min, xmax = x_max,
+                ymin = y_base - 0.5, ymax = y_base + 0.5),
+            fill = col_band, alpha = 0.7) +
   
   # vertical grid lines, drawn per panel so they do not cross the gap
   geom_segment(data = tibble(x = x_breaks), inherit.aes = FALSE,
@@ -945,19 +960,19 @@ forest <- ggplot(
     panel.grid.minor = element_blank(),
     panel.grid.major.x = element_blank(),          # drawn manually per panel
     axis.text.x = element_blank(),                 # drawn manually per panel
-    axis.text.y = element_text(size = 12),
+    axis.text.y = element_text(size = 12, colour = y_cols),  # best model label in green
     plot.margin = margin(t = 0, r = 15, b = 0, l = 10))
 
 # ---- One DIC arrow per panel -------------------------------------------------
 # Same y-scale and same top/bottom margins as the forest plot, so each arrow
-# runs from its panel's best model (top row) to its worst model (bottom row).
+# runs from its panel's lowest-DIC model (top row) to its highest-DIC model (bottom row).
 arrow_plot <- ggplot(arrow_df) +
   geom_segment(aes(x = 0, xend = 0, y = y_worst, yend = y_best),
                arrow = arrow(length = unit(0.12, "inches"), ends = "both", type = "closed"),
                colour = "grey30", linewidth = 0.3) +
-  geom_text(aes(x = 0, y = y_best), label = "Low DIC (best)",
+  geom_text(aes(x = 0, y = y_best), label = "Lower DIC",
             angle = 90, vjust = -1, size = 3.5, colour = "grey30") +
-  geom_text(aes(x = 0, y = y_worst), label = "High DIC (worst)",
+  geom_text(aes(x = 0, y = y_worst), label = "Higher DIC",
             angle = 90, vjust = -1, size = 3.5, colour = "grey30") +
   coord_cartesian(xlim = c(-1, 1), ylim = y_limits, clip = "off", expand = FALSE) +
   theme_void() +
@@ -971,7 +986,8 @@ final_plot <- arrow_plot + forest + plot_layout(widths = c(0.06, 1))
 
 final_plot
 
-ggsave(filename = here("results", "forest_plot_info_two_panels_vertical.png"), plot = final_plot, width = 10, height = 8, dpi = 300)
+ggsave(filename = here("results", "forest_plot_info_two_panels_vertical.png"), 
+       plot = final_plot, width = 10, height = 8, dpi = 300)
 
 
 
@@ -1083,7 +1099,8 @@ make_panel <- function(type, title, show_jump = FALSE) {
                      colour = model, fill = model, linetype = model,
                      group = interaction(model, period))) +   # breaks the line at t = 0
     geom_hline(yintercept = 1, linetype = "dashed", colour = "red", linewidth = 0.5) +
-    geom_vline(xintercept = 0, linetype = "dashed", colour = "grey35", linewidth = 0.6) +
+    geom_vline(xintercept = 0, linetype = "dashed", colour = "grey10",
+               linewidth = 0.4, alpha = 1) +
     geom_ribbon(aes(ymin = rr_lo, ymax = rr_hi), alpha = 0.15, colour = NA)
   
   # jump connector (thin, dotted, same colour); remove if you prefer a visible gap
@@ -1124,9 +1141,14 @@ p_step <- make_panel("Step change",    "(a) Step change",    show_jump = TRUE)
 p_gradual <- make_panel("Gradual change", "(b) Gradual change", show_jump = FALSE)
 
 p_event <- p_step + p_gradual +
-  plot_layout(ncol = 2)
+  plot_layout(ncol = 2) +
+  plot_annotation(
+    title = "Cumulative rate ratios relative to policy adoption",
+    theme = theme(plot.title = element_text(face = "bold", size = 16, hjust = 0.5)))
 
 p_event
 
+
 # 8. Save 
-ggsave(here("results", "cumulative_rr_policy_event_time_joint.png"), p_event, width = 14, height = 6.5, dpi = 300)
+ggsave(here("results", "cumulative_rr_policy_event_time_joint.png"), 
+       p_event, width = 14, height = 6.5, dpi = 300)

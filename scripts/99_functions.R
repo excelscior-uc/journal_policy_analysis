@@ -142,39 +142,77 @@ acf_per_param <- function(mcmc_list, param_name, max_lag = 50) {
              parameter = param_name)
 }
 
+#' Default y-axis label (plotmath) for a parameter name.
+#' Override per call through the `y_labels` argument of save_trace_density().
+default_param_ylab <- function(param) {
+  switch(param,
+         alpha     = expression("Intercept (" * alpha * ")"),
+         A         = expression("Intercept (" * A * ")"),
+         beta      = expression("Time effect (" * beta * ")"),
+         gamma     = expression("Policy effect (" * gamma * ")"),
+         sigma_a   = expression("SD of journal intercepts (" * sigma[a] * ")"),
+         sigma_b   = expression("SD of journal slopes (" * sigma[b] * ")"),
+         sigma_f   = expression("SD of field intercepts (" * sigma[f] * ")"),
+         sigma_obs = expression("SD of observation errors (" * sigma[obs] * ")"),
+         param)   # fallback: raw parameter name
+}
+
 #' Save trace + density PDFs for a set of key parameters
+#'
+#' @param y_labels optional named list/vector (names = parameter names) of
+#'   y-axis labels for the trace plots; character strings or plotmath
+#'   expressions. Missing parameters fall back to default_param_ylab().
 save_trace_density <- function(mcmc_list, key_params, param_labels,
-                               model_label, nrow_panels) {
+                               model_label, nrow_panels, y_labels = NULL) {
   
-  chain_cols <- c("#1E90FF", "#9932CC", "#008B8B", "#E05555")
-  chain_ltys  <- c(1, 2, 3, 4)
   n_chains    <- nchain(mcmc_list)
+  chain_cols  <- rep_len(c("#1E90FF", "#9932CC", "#008B8B", "#E05555"), n_chains)
+  chain_ltys  <- rep_len(c(1, 2, 3, 4), n_chains)
   chain_names <- paste("Chain", seq_len(n_chains))
   
+  get_ylab <- function(param) {
+    if (!is.null(y_labels) && !is.null(y_labels[[param]])) y_labels[[param]]
+    else default_param_ylab(param)
+  }
+  
+  dir.create(here("diagnostics"), showWarnings = FALSE, recursive = TRUE)
+  
   # ── Trace plots ─────────────────────────────────────────────────────────────
+  # oma[1] = 3 leaves room at the bottom for the shared chain legend
   pdf(here("diagnostics", paste0("trace_plots_", model_label, ".pdf")),  width = 10, height = 8)
-  par(mfrow = c(nrow_panels, 2), mar = c(4, 4.5, 3, 1), oma = c(0, 0, 2.5, 0))
+  par(mfrow = c(nrow_panels, 2), mar = c(4, 5, 3, 1), oma = c(3, 0, 2.5, 0))
   
   for (param in key_params) {
     traceplot(mcmc_list[, param],
               main = param_labels[param],
-              col  = chain_cols[seq_len(n_chains)],
-              lwd  = 1.2,
-              lty  = chain_ltys[seq_len(n_chains)])
+              xlab = "Iteration (post burn-in)",
+              ylab = get_ylab(param),
+              col  = chain_cols,
+              lwd  = 1,
+              lty  = chain_ltys)
   }
-  mtext(paste("Trace plots"), outer = TRUE, cex = 1, line = 0.8)
-  dev.off()   
+  mtext("Trace plots", outer = TRUE, cex = 1, line = 0.8)
+  
+  # Shared legend, centred in the bottom outer margin.
+  # Overlay an empty full-device plot, then draw the legend on it.
+  par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
+  plot(0, 0, type = "n", axes = FALSE, xlab = "", ylab = "")
+  legend("bottom", legend = chain_names, col = chain_cols, lty = chain_ltys,
+         lwd = 2, horiz = TRUE, bty = "n", xpd = TRUE, inset = c(0, 0.005))
+  dev.off()
   
   # ── Density plots ────────────────────────────────────────────────────────────
   pdf(here("diagnostics", paste0("density_plots_", model_label, ".pdf")), width = 10, height = 8)
-  par(mfrow = c(nrow_panels, 2), mar = c(4, 4.5, 3, 1), oma = c(0, 0, 2.5, 0))
+  par(mfrow = c(nrow_panels, 2), mar = c(4, 5, 3, 1), oma = c(0, 0, 2.5, 0))
   
   for (param in key_params) {
     densplot(mcmc_list[, param],
              main = param_labels[param],
+             xlab = get_ylab(param),     # density x-axis = parameter value
+             ylab = "Posterior density",
              show.obs = FALSE)
   }
-  mtext(paste("Posterior density plots"), outer = TRUE, cex = 1, line = 0.8)
+  mtext("Posterior density plots", outer = TRUE, cex = 1, line = 0.8)
   dev.off()
   
   message("Saved trace + density PDFs for: ", model_label)
@@ -193,19 +231,28 @@ save_acf_plot <- function(mcmc_list, key_params, param_labels, model_label) {
   n_per_chain <- nrow(as.matrix(mcmc_list[[1]]))
   acf_ci <- 1.96 / sqrt(n_per_chain)
   
+  lab_acf <- "Autocorrelation averaged across chains"
+  lab_ci  <- "Approx. 95% bounds under independence"
+  ci_df   <- data.frame(yint = c(acf_ci, -acf_ci), lab = lab_ci)
+  
   p <- ggplot(acf_data, aes(x = lag, y = acf)) +
-    geom_hline(yintercept =  0,       linetype = "solid",  color = "gray50") +
-    geom_hline(yintercept =  acf_ci,  linetype = "dashed", color = "gray70") +
-    geom_hline(yintercept = -acf_ci,  linetype = "dashed", color = "gray70") +
-    geom_line(color  = "#2c7bb6") +
-    geom_point(size  = 1.2, color = "#2c7bb6") +
+    geom_hline(yintercept = 0, linetype = "solid", color = "gray50") +
+    geom_hline(data = ci_df, aes(yintercept = yint, linetype = lab),
+               color = "gray50", inherit.aes = FALSE) +
+    geom_line(aes(color = lab_acf)) +
+    geom_point(aes(color = lab_acf), size = 1.2) +
+    scale_color_manual(name = NULL, values = setNames("#2c7bb6", lab_acf)) +
+    scale_linetype_manual(name = NULL, values = setNames("dashed", lab_ci)) +
     facet_wrap(~ parameter, scales = "free_y", ncol = 2) +
     theme_minimal(base_size = 13) +
-    labs(title = paste("ACF"),
-         x = "Lag", y = "Autocorrelation") +
+    labs(title = "Autocorrelation of posterior draws",
+         x = "Lag (saved iterations)",
+         y = "Autocorrelation (ACF)") +
     theme(panel.grid.minor = element_blank(),
           strip.background = element_rect(fill = "gray95"),
-          strip.text       = element_text(face = "bold"))
+          strip.text       = element_text(face = "bold"),
+          legend.position  = "bottom",
+          legend.box       = "horizontal")
   
   ggsave(here("diagnostics", paste0("acf_", model_label, ".pdf")), plot = p, width = 10, height = 8, dpi = 320)
   message("Saved ACF plot for: ", model_label)

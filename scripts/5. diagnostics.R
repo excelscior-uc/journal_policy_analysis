@@ -1,3 +1,4 @@
+
 ## ===============
 ## diagnostics.R
 ## ===============
@@ -14,6 +15,19 @@ library(nimble)
 
 source("scripts/99_functions.R")
 #source("3_models.R")
+
+# ------------------------------------------------------------------
+# Y-axis labels for trace plots (shared by all models).
+# ------------------------------------------------------------------
+ylabs_all <- list(
+  alpha     = expression("Intercept (" * alpha * ")"),
+  A         = expression("Intercept (" * A * ")"),
+  beta      = expression("Time effect (" * beta * ")"),
+  gamma     = expression("Policy effect (" * gamma * ")"),
+  sigma_a   = expression("SD of journal intercepts (" * sigma[a] * ")"),
+  sigma_b   = expression("SD of journal slopes (" * sigma[b] * ")"),
+  sigma_f   = expression("SD of field intercepts (" * sigma[f] * ")"),
+  sigma_obs = expression("SD of observation errors (" * sigma[obs] * ")"))
 
 # ---------
 # Model 1A
@@ -32,7 +46,7 @@ labels1A <- c(alpha     = "Intercepts",
               sigma_b   = "SD of journal slopes",
               sigma_obs = "SD of observation-level errors")
 
-save_trace_density(mcmc_list1A, key_params1A, labels1A, label_model1A_pois, nrow_panels = 3)
+save_trace_density(mcmc_list1A, key_params1A, labels1A, label_model1A_pois, nrow_panels = 3, y_labels = ylabs_all)
 save_acf_plot(mcmc_list1A, key_params1A, labels1A, label_model1A_pois)
 
 # DIC calculation
@@ -55,7 +69,7 @@ labels1B <- c(alpha   = "Intercepts",
               sigma_a = "SD of journal intercepts",
               sigma_b = "SD of journal time slopes")
 
-save_trace_density(mcmc_list1B, key_params1B, labels1B, label_model1B_pois, nrow_panels = 3)
+save_trace_density(mcmc_list1B, key_params1B, labels1B, label_model1B_pois, nrow_panels = 3, y_labels = ylabs_all)
 save_acf_plot(mcmc_list1B, key_params1B, labels1B, label_model1B_pois)
 
 # DIC calculation
@@ -77,7 +91,7 @@ labels2 <- c(alpha   = "Intercepts",
              gamma   = "Policy effects",
              sigma_a = "SD of journal intercepts")
 
-save_trace_density(mcmc_list2, key_params2, labels2, label_model2_pois, nrow_panels = 2)
+save_trace_density(mcmc_list2, key_params2, labels2, label_model2_pois, nrow_panels = 2, y_labels = ylabs_all)
 save_acf_plot(mcmc_list2, key_params2, labels2, label_model2_pois)
 
 # DIC calculation
@@ -101,7 +115,7 @@ labels3 <- c(A       = "Intercepts",
              sigma_b = "SD of journal slopes",
              sigma_f = "SD of field-level intercepts")
 
-save_trace_density(mcmc_list3, key_params3, labels3, label_model3_pois, nrow_panels = 3)
+save_trace_density(mcmc_list3, key_params3, labels3, label_model3_pois, nrow_panels = 3, y_labels = ylabs_all)
 save_acf_plot(mcmc_list3, key_params3, labels3, label_model3_pois)
 
 # DIC calculation
@@ -123,7 +137,7 @@ labels4 <- c(alpha   = "Intercepts",
              gamma   = "Policy effects",
              sigma_a = "SD of journal-specific intercepts")
 
-save_trace_density(mcmc_list4, key_params4, labels4, label_model4_pois, nrow_panels = 2)
+save_trace_density(mcmc_list4, key_params4, labels4, label_model4_pois, nrow_panels = 2, y_labels = ylabs_all)
 save_acf_plot(mcmc_list4, key_params4, labels4, label_model4_pois)
 
 # DIC calculation
@@ -146,7 +160,7 @@ labels5 <- c(alpha   = "Intercepts",
              sigma_a = "SD of journal-specific intercepts",
              sigma_b = "SD of journal-specific time slopes")
 
-save_trace_density(mcmc_list5, key_params5, labels5, label_model5_pois, nrow_panels = 3)
+save_trace_density(mcmc_list5, key_params5, labels5, label_model5_pois, nrow_panels = 3, y_labels = ylabs_all)
 save_acf_plot(mcmc_list5, key_params5, labels5, label_model5_pois)
 
 # DIC calculation
@@ -170,7 +184,7 @@ labels6 <- c(alpha   = "Intercepts",
              sigma_b = "SD of journal-specific time slopes",
              sigma_f = "SD of field-specific intercepts")
 
-save_trace_density(mcmc_list6, key_params6, labels6, label_model6_pois, nrow_panels = 3)
+save_trace_density(mcmc_list6, key_params6, labels6, label_model6_pois, nrow_panels = 3, y_labels = ylabs_all)
 save_acf_plot(mcmc_list6, key_params6, labels6, label_model6_pois)
 
 # DIC calculation
