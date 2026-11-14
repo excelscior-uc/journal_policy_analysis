@@ -224,4 +224,3 @@ Model labels are `model<ID>_pois_<k>k` for the primary outcome and `model<ID>_in
 |:---|:---|
 | `results/` | Fitted samples (`.rds`), `coda` objects, summary and DIC tables (`.csv`), figures (`.pdf`) |
 | `diagnostics/` | Trace, density and ACF plots (`.pdf`), DIC text summaries (`.txt`) |
-
