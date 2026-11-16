@@ -34,7 +34,7 @@ Code and supplementary information for an observational study evaluating whether
 
 1. Clone the repository and create the `data/`, `scripts/`, `results/` and `diagnostics/` folders locally.
 2. Put the prepared datasets in `data/`: `df_descriptive.csv` (read by script 2) and `df_sample.csv` (read by scripts 3 and 6 and by `99_functions.R`).
-3. Open the project as an **RStudio Project**. The **here** package needs this to resolve paths from the repository root.
+3. Open `JournalPolicy.Rproj` in RStudio (double-click the file, or use *File → Open Project…*). The **here** package needs the project to resolve paths from the repository root, so always run the scripts from within this project.
 4. Install the required packages (developed and tested under R 4.5.1):
 
 ```r
@@ -48,10 +48,12 @@ Code and supplementary information for an observational study evaluating whether
 
 ```text
 .
-├── data/          # Prepared datasets (df_sample.csv, df_descriptive.csv)
-├── scripts/       # All analysis R scripts (numbered pipeline order)
-├── results/       # Model outputs, summary tables, figures
-└── diagnostics/   # MCMC diagnostics (trace/density/ACF PDFs, DIC summaries)
+├── JournalPolicy.Rproj  # RStudio project file (open this first)
+├── data/                # Prepared datasets (df_sample.csv, df_descriptive.csv) and overview_of_publication_filters.pdf
+├── scripts/             # Analysis R scripts (numbered pipeline order) and sample_size.R
+├── results/             # Model outputs, summary tables, figures
+├── diagnostics/         # MCMC diagnostics (trace/density/ACF PDFs, DIC summaries)
+└── figures/             # Figures written by sample_size.R (create locally)
 ```
 
 ### Pipeline overview
@@ -65,7 +67,7 @@ Code and supplementary information for an observational study evaluating whether
 | `5__diagnostics.R` | MCMC diagnostics (trace, density, ACF), DIC per model, and the DIC comparison table for `n_bar`. |
 | `6__sensitivity.R` | Refits all seven models for `n_info`, runs their summaries, diagnostics, DIC table and forest plot, and builds the cumulative rate-ratio plot. |
 
-**Run order:** 2 → 3 → 5 → 4 → 6. The forest plot in script 4 reads `results/dic_comparison_bar.csv`, which script 5 writes, so run script 5 first (or rerun script 4 afterwards). Script 6 is self-contained for the secondary outcome, so there is no need to loop back through scripts 4 and 5.
+**Run order:** 2 → 3 → 5 → 4 → 6. The forest plot in script 4 reads `results/dic_comparison_bar.csv`, which script 5 writes, so run script 5 first (or rerun script 4 afterwards). Script 6 is self-contained for the secondary outcome, so there is no need to loop back through scripts 4 and 5. `sample_size.R` is the sample size calculation from the preregistered report (see [Script reference](#sample_sizer)) and is not part of this run order.
 
 #### Pipeline flowchart
 
@@ -113,6 +115,7 @@ Solid arrows show the order of the steps. The dotted "DIC table" arrows show tha
 |:---|:---|
 | `df_descriptive.csv` | Journal-year-level data for descriptive summaries, including counts of articles excluded from the main analysis. |
 | `df_sample.csv` | Journal-year-level data restricted to articles containing bar graphs for continuous data, informative visualizations, or both. Used for the primary and secondary analyses. |
+| `overview_of_publication_filters.pdf` | Overview of the publication filters, provided as part of the [preregistered report](https://osf.io/tcyxg/overview).  |
 
 #### Data dictionary
 
@@ -147,9 +150,6 @@ Sourced by scripts 3–6. Besides the model-fitting and diagnostic helpers (`bui
 |:---|:---|:---|:---|
 | Primary (`n_bar`) | `compute_dic_bar()` | `build_dic_bar_table()` | `results/dic_comparison_bar.csv` |
 | Secondary (`n_info`) | `compute_dic_info()` | `build_dic_info_table()` | `results/dic_comparison_info.csv` |
-
-- The DIC functions pick the matching outcome data (`dic_data_bar` / `dic_data_info`) and the model-specific log-likelihood (non-nested, 3-level nested, or field hierarchy) automatically, so nothing needs to be commented or uncommented to switch outcome.
-- `compute_dic_bar()` stops if the label contains `_info_`, and `compute_dic_info()` stops if it does not. The table builders use `_info_` in the label to separate the two outcomes when they discover saved DIC files.
 
 #### `2__descriptives.R`
 
@@ -202,6 +202,16 @@ For each of the 7 primary outcome models, loads the MCMC and sample objects from
 
 **Cumulative rate-ratio plot.** Builds cumulative rate-ratio curves for the 7 *primary outcome* models over −3 to +3 years relative to policy adoption, using the joint posterior draws of the time (`beta`) and policy (`gamma`) effects. Step-change models (1A–3) are solid and gradual-change models (4–6) are dashed → `results/cumulative_rr_policy_event_time_joint.pdf`. This needs the primary models from script 3.
 
+#### `sample_size.R`
+
+Simulation-based sample size calculation used in the [preregistered report](https://osf.io/tcyxg/overview). It is **not** part of the numbered pipeline, reads no files from `data/`, and does not need to be run to reproduce the results.
+
+- **Design:** simulates journal-year paper counts for journals with and without a policy (random policy years between 2017 and 2021, 2010–2022 follow-up), draws the number of papers with bar graphs from a binomial distribution, and adds extra-Poisson noise. Key assumptions (journal numbers, papers per year, base rate, time trend, policy efficacy, noise) are set at the top of the script.
+- **Analysis:** each of `n_sim` (1000) simulated datasets is fitted with a quasi-Poisson GLM (`yearc + has_policy`, `offset(log(papers))` and a fixed effect per journal); power is the proportion of simulations with p < 0.05 for each term.
+- **Reproducibility:** the random seed is set with `TeachingDemos::char2seed('spain')`.
+- **Packages:** in addition to the packages above, it uses `janitor`, `broom.mixed`, `lme4` and `TeachingDemos` (`nimble`, `dplyr` and `ggplot2` are already listed in the Quick start).
+- **Writes to `figures/`** (create this folder first): `simulation_journal_numbers.jpg` (papers per journal over time) and `simulation_observed_proportions.jpg` (proportion of bar graphs by policy year).
+
 ### Models
 
 | Model | Policy effect | Description |
@@ -224,3 +234,4 @@ Model labels are `model<ID>_pois_<k>k` for the primary outcome and `model<ID>_in
 |:---|:---|
 | `results/` | Fitted samples (`.rds`), `coda` objects, summary and DIC tables (`.csv`), figures (`.pdf`) |
 | `diagnostics/` | Trace, density and ACF plots (`.pdf`), DIC text summaries (`.txt`) |
+| `figures/` | Sample size simulation figures from `sample_size.R` (`.jpg`) |
