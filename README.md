@@ -55,7 +55,7 @@ Vladislav Nachev<sup>3</sup> <a href="https://orcid.org/0000-0003-0521-6153"><im
 ---
 - **Interactive dashboard:** [View the dashboard](https://excelscior-uc.github.io/journal-policy-dashboard/)
 - **Preregistration:** [Open the preregistration](https://osf.io/tcyxg/overview)
-- **Zenodo:** [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23677882.svg)](https://doi.org/10.5281/zenodo.23677882)
+- **Zenodo:** [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24306612.svg)](https://doi.org/10.5281/zenodo.24306612)
 ---
 
 Code and supplementary information for an observational study evaluating whether journal editorial policies reduce the inappropriate presentation of continuous data with bar graphs and increase the use of more informative graphical displays. The analysis uses Bayesian hierarchical Poisson models fitted with the **nimble** package.
