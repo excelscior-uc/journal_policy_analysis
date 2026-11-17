@@ -370,8 +370,10 @@ final_plot <- arrow_plot + forest + plot_layout(widths = c(0.06, 1))
 
 final_plot
 
-ggsave(filename = here("results", "forest_plot_bar_two_panels_vertical.png"),
-       plot = final_plot, width = 10, height = 8, dpi = 300)
+#ggsave(filename = here("results", "forest_plot_bar_two_panels_vertical.png"),
+#       plot = final_plot, width = 10, height = 8, dpi = 300)
+ggsave(filename = here("results", "Fig6.tif"), plot = final_plot, width = 10,
+       height = 8, dpi = 300, device = "tiff", compression = "lzw")
 
 
 

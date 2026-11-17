@@ -12,6 +12,8 @@ library(readr)
 library(fs)
 library(stringr)
 library(nimble)
+library(pdftools)
+library(magick)
 
 source("scripts/99_functions.R")
 #source("3_models.R")
@@ -33,7 +35,6 @@ ylabs_all <- list(
 # Model 1A
 # ---------
 label_model1A_pois <- paste0("model1A_pois_", mcmc_niter %/% 1000, "k")
-
 mcmc_list1A <- readRDS(here("results", paste0("mcmc_list_", label_model1A_pois, ".rds")))
 samples_1A <- readRDS(here("results", paste0("samples_", label_model1A_pois, ".rds")))
 all_samples1A <- do.call(rbind, samples_1A$samples)
@@ -57,7 +58,6 @@ compute_dic_bar(samples_1A, label_model1A_pois)
 # Model 1B
 # ---------
 label_model1B_pois <- paste0("model1B_pois_", mcmc_niter %/% 1000, "k")
-
 mcmc_list1B <- readRDS(here("results", paste0("mcmc_list_", label_model1B_pois, ".rds")))
 samples_1B  <- readRDS(here("results", paste0("samples_", label_model1B_pois, ".rds")))
 all_samples1B <- do.call(rbind, samples_1B$samples)
@@ -80,7 +80,6 @@ compute_dic_bar(samples_1B, label_model1B_pois)
 # Model 2
 # --------
 label_model2_pois <- paste0("model2_pois_", mcmc_niter %/% 1000, "k")
-
 mcmc_list2 <- readRDS(here("results", paste0("mcmc_list_", label_model2_pois, ".rds")))
 samples_2  <- readRDS(here("results", paste0("samples_", label_model2_pois, ".rds")))
 all_samples2 <- do.call(rbind, samples_2$samples)
@@ -102,7 +101,6 @@ compute_dic_bar(samples_2,  label_model2_pois)
 # Model 3
 # --------
 label_model3_pois <- paste0("model3_pois_", mcmc_niter %/% 1000, "k")
-
 mcmc_list3 <- readRDS(here("results", paste0("mcmc_list_", label_model3_pois, ".rds")))
 samples_3  <- readRDS(here("results", paste0("samples_", label_model3_pois, ".rds")))
 all_samples3 <- do.call(rbind, samples_3$samples)
@@ -115,8 +113,14 @@ labels3 <- c(A       = "Intercepts",
              sigma_b = "SD of journal slopes",
              sigma_f = "SD of field-level intercepts")
 
-save_trace_density(mcmc_list3, key_params3, labels3, label_model3_pois, nrow_panels = 3, y_labels = ylabs_all)
-save_acf_plot(mcmc_list3, key_params3, labels3, label_model3_pois)
+#save_trace_density(mcmc_list3, key_params3, labels3, label_model3_pois, nrow_panels = 3, y_labels = ylabs_all)
+#save_acf_plot(mcmc_list3, key_params3, labels3, label_model3_pois)
+save_trace_density(mcmc_list3, key_params3, labels3, label_model3_pois, nrow_panels = 3,
+                   y_labels = ylabs_all,
+                   tif_files = c(trace = "FigS1.tif", density = "FigS2.tif"))
+save_acf_plot(mcmc_list3, key_params3, labels3, label_model3_pois,
+              tif_file = "FigS3.tif")
+
 
 # DIC calculation
 compute_dic_bar(samples_3, label_model3_pois)
@@ -126,7 +130,6 @@ compute_dic_bar(samples_3, label_model3_pois)
 # Model 4
 # --------
 label_model4_pois <- paste0("model4_pois_", mcmc_niter %/% 1000, "k")
-
 mcmc_list4 <- readRDS(here("results", paste0("mcmc_list_", label_model4_pois, ".rds")))
 samples_4 <- readRDS(here("results", paste0("samples_", label_model4_pois, ".rds")))
 all_samples4 <- do.call(rbind, samples_4$samples)
@@ -148,7 +151,6 @@ compute_dic_bar(samples_4, label_model4_pois)
 # Model 5
 # --------
 label_model5_pois <- paste0("model5_pois_", mcmc_niter %/% 1000, "k")
-
 mcmc_list5 <- readRDS(here("results", paste0("mcmc_list_", label_model5_pois, ".rds")))
 samples_5  <- readRDS(here("results", paste0("samples_", label_model5_pois, ".rds")))
 all_samples5 <- do.call(rbind, samples_5$samples)
@@ -171,7 +173,6 @@ compute_dic_bar(samples_5, label_model5_pois)
 # Model 6
 # --------
 label_model6_pois <- paste0("model6_pois_", mcmc_niter %/% 1000, "k")
-
 mcmc_list6 <- readRDS(here("results", paste0("mcmc_list_", label_model6_pois, ".rds")))
 samples_6 <- readRDS(here("results", paste0("samples_", label_model6_pois, ".rds")))
 all_samples6 <- do.call(rbind, samples_6$samples)

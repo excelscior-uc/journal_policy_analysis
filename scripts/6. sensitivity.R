@@ -15,6 +15,8 @@ library(here)
 library(fs)
 library(stringr)
 library(patchwork)
+library(pdftools)
+library(magick)
 
 source("scripts/99_functions.R")
 
@@ -536,6 +538,9 @@ summarise_model(mcmc_list6,
 
 
 ## 3. DIAGNOSTICS
+# ------------------------------------------------------------------
+# Y-axis labels for trace plots (shared by all models).
+# ------------------------------------------------------------------
 
 # ---------
 # Model 1A
@@ -640,8 +645,12 @@ labels4 <- c(alpha   = "Intercepts",
              gamma   = "Policy effects",
              sigma_a = "SD of journal-specific intercepts")
 
-save_trace_density(mcmc_list4, key_params4, labels4, label_model4_pois, nrow_panels = 2)
-save_acf_plot(mcmc_list4, key_params4, labels4, label_model4_pois)
+#save_trace_density(mcmc_list4, key_params4, labels4, label_model4_pois, nrow_panels = 2)
+#save_acf_plot(mcmc_list4, key_params4, labels4, label_model4_pois)
+save_trace_density(mcmc_list4, key_params4, labels4, label_model4_pois, nrow_panels = 2,
+                   tif_files = c(trace = "FigS5.tif", density = "FigS6.tif"))
+save_acf_plot(mcmc_list4, key_params4, labels4, label_model4_pois,
+              tif_file = "FigS7.tif")
 
 # DIC calculation
 compute_dic_info(samples_4, label_model4_pois)
@@ -986,8 +995,10 @@ final_plot <- arrow_plot + forest + plot_layout(widths = c(0.06, 1))
 
 final_plot
 
-ggsave(filename = here("results", "forest_plot_info_two_panels_vertical.png"), 
-       plot = final_plot, width = 10, height = 8, dpi = 300)
+#ggsave(filename = here("results", "forest_plot_info_two_panels_vertical.png"), 
+#       plot = final_plot, width = 10, height = 8, dpi = 300)
+ggsave(filename = here("results", "Fig7.tif"), plot = final_plot, width = 10,
+       height = 8, dpi = 300, device = "tiff", compression = "lzw")
 
 
 
@@ -1148,7 +1159,8 @@ p_event <- p_step + p_gradual +
 
 p_event
 
-
 # 8. Save 
-ggsave(here("results", "cumulative_rr_policy_event_time_joint.png"), 
-       p_event, width = 14, height = 6.5, dpi = 300)
+#ggsave(here("results", "cumulative_rr_policy_event_time_joint.png"), 
+#       p_event, width = 14, height = 6.5, dpi = 300)
+ggsave(filename = here("results", "FigS4.tif"), plot = p_event, width = 14,
+       height = 6.5, dpi = 300, device = "tiff", compression = "lzw")

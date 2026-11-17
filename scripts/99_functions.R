@@ -157,13 +157,38 @@ default_param_ylab <- function(param) {
          param)   # fallback: raw parameter name
 }
 
+#' Write a figure straight to a journal-ready TIFF (no PDF in between).
+#' LZW-compressed, plain RGB, white background, 300-600 dpi, checked < max_mb.
+#' Drawing directly avoids the font problems of converting a PDF: Greek letters
+#' from plotmath labels are rendered by the device itself.
+#' @param draw a function with no arguments that draws the whole figure
+write_tif <- function(path, draw, dpi = 300, width = 10, height = 8, max_mb = 10) {
+  stopifnot(dpi >= 300, dpi <= 600)
+  if (!requireNamespace("ragg", quietly = TRUE)) {
+    stop("Package 'ragg' is required for TIFF output: install.packages('ragg')")
+  }
+  ragg::agg_tiff(path, width = width, height = height, units = "in",
+                 res = dpi, compression = "lzw", background = "white")
+  tryCatch(draw(), finally = dev.off())
+  size_mb <- file.size(path) / 1024^2
+  message(sprintf("%s: %d x %d px at %d dpi, %.2f MB", basename(path),
+                  round(width * dpi), round(height * dpi), dpi, size_mb))
+  if (size_mb >= max_mb) warning(basename(path), " exceeds ", max_mb, " MB")
+  invisible(path)
+}
+
 #' Save trace + density PDFs for a set of key parameters
 #'
 #' @param y_labels optional named list/vector (names = parameter names) of
 #'   y-axis labels for the trace plots; character strings or plotmath
 #'   expressions. Missing parameters fall back to default_param_ylab().
+#' @param tif_files optional named character vector c(trace = "FigS5.tif",
+#'   density = "FigS6.tif"); when given, the figures are also written as
+#'   journal-spec TIFFs into the diagnostics folder (either name may be omitted).
+#' @param tif_dpi resolution of the TIFFs (300-600).
 save_trace_density <- function(mcmc_list, key_params, param_labels,
-                               model_label, nrow_panels, y_labels = NULL) {
+                               model_label, nrow_panels, y_labels = NULL,
+                               tif_files = NULL, tif_dpi = 300) {
   
   n_chains    <- nchain(mcmc_list)
   chain_cols  <- rep_len(c("#1E90FF", "#9932CC", "#008B8B", "#E05555"), n_chains)
@@ -179,47 +204,70 @@ save_trace_density <- function(mcmc_list, key_params, param_labels,
   
   # ── Trace plots ─────────────────────────────────────────────────────────────
   # oma[1] = 3 leaves room at the bottom for the shared chain legend
-  pdf(here("diagnostics", paste0("trace_plots_", model_label, ".pdf")),  width = 10, height = 8)
-  par(mfrow = c(nrow_panels, 2), mar = c(4, 5, 3, 1), oma = c(3, 0, 2.5, 0))
-  
-  for (param in key_params) {
-    traceplot(mcmc_list[, param],
-              main = param_labels[param],
-              xlab = "Iteration (post burn-in)",
-              ylab = get_ylab(param),
-              col  = chain_cols,
-              lwd  = 1,
-              lty  = chain_ltys)
+  draw_trace <- function() {
+    par(mfrow = c(nrow_panels, 2), mar = c(4, 5, 3, 1), oma = c(3, 0, 2.5, 0))
+    
+    for (param in key_params) {
+      traceplot(mcmc_list[, param],
+                main = param_labels[param],
+                xlab = "Iteration (post burn-in)",
+                ylab = get_ylab(param),
+                col  = chain_cols,
+                lwd  = 1,
+                lty  = chain_ltys)
+    }
+    mtext("Trace plots", outer = TRUE, cex = 1, line = 0.8)
+    
+    # Shared legend, centred in the bottom outer margin.
+    # Overlay an empty full-device plot, then draw the legend on it.
+    par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
+    plot(0, 0, type = "n", axes = FALSE, xlab = "", ylab = "")
+    legend("bottom", legend = chain_names, col = chain_cols, lty = chain_ltys,
+           lwd = 2, horiz = TRUE, bty = "n", xpd = TRUE, inset = c(0, 0.005))
   }
-  mtext("Trace plots", outer = TRUE, cex = 1, line = 0.8)
-  
-  # Shared legend, centred in the bottom outer margin.
-  # Overlay an empty full-device plot, then draw the legend on it.
-  par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
-  plot(0, 0, type = "n", axes = FALSE, xlab = "", ylab = "")
-  legend("bottom", legend = chain_names, col = chain_cols, lty = chain_ltys,
-         lwd = 2, horiz = TRUE, bty = "n", xpd = TRUE, inset = c(0, 0.005))
-  dev.off()
   
   # ── Density plots ────────────────────────────────────────────────────────────
-  pdf(here("diagnostics", paste0("density_plots_", model_label, ".pdf")), width = 10, height = 8)
-  par(mfrow = c(nrow_panels, 2), mar = c(4, 5, 3, 1), oma = c(0, 0, 2.5, 0))
-  
-  for (param in key_params) {
-    densplot(mcmc_list[, param],
-             main = param_labels[param],
-             xlab = get_ylab(param),     # density x-axis = parameter value
-             ylab = "Posterior density",
-             show.obs = FALSE)
+  draw_density <- function() {
+    par(mfrow = c(nrow_panels, 2), mar = c(4, 5, 3, 1), oma = c(0, 0, 2.5, 0))
+    
+    for (param in key_params) {
+      densplot(mcmc_list[, param],
+               main = param_labels[param],
+               xlab = get_ylab(param),     # density x-axis = parameter value
+               ylab = "Posterior density",
+               show.obs = FALSE)
+    }
+    mtext("Posterior density plots", outer = TRUE, cex = 1, line = 0.8)
   }
-  mtext("Posterior density plots", outer = TRUE, cex = 1, line = 0.8)
-  dev.off()
   
-  message("Saved trace + density PDFs for: ", model_label)
+  # PDFs use cairo_pdf() so fonts (incl. Greek letters) are embedded
+  cairo_pdf(here("diagnostics", paste0("trace_plots_", model_label, ".pdf")),
+            width = 10, height = 8)
+  tryCatch(draw_trace(), finally = dev.off())
+  
+  cairo_pdf(here("diagnostics", paste0("density_plots_", model_label, ".pdf")),
+            width = 10, height = 8)
+  tryCatch(draw_density(), finally = dev.off())
+  
+  # Optional journal TIFFs, drawn directly (not converted from the PDFs)
+  tif_name <- function(key) {
+    if (is.null(tif_files) || !(key %in% names(tif_files))) NULL else tif_files[[key]]
+  }
+  if (!is.null(tif_name("trace"))) {
+    write_tif(here("diagnostics", tif_name("trace")), draw_trace, dpi = tif_dpi)
+  }
+  if (!is.null(tif_name("density"))) {
+    write_tif(here("diagnostics", tif_name("density")), draw_density, dpi = tif_dpi)
+  }
+  
+  message("Saved trace + density figures for: ", model_label)
 }
 
-#' Save ACF plot as PDF
-save_acf_plot <- function(mcmc_list, key_params, param_labels, model_label) {
+#' Save ACF plot as PDF (and optionally TIFF)
+#' @param tif_file optional file name (e.g. "FigS7.tif"); when given, the plot
+#'   is also written as a journal-spec TIFF into the diagnostics folder.
+save_acf_plot <- function(mcmc_list, key_params, param_labels, model_label,
+                          tif_file = NULL, tif_dpi = 300) {
   acf_data <- bind_rows(
     lapply(key_params, function(p) acf_per_param(mcmc_list, p, max_lag = 50))
   )
@@ -255,6 +303,10 @@ save_acf_plot <- function(mcmc_list, key_params, param_labels, model_label) {
           legend.box       = "horizontal")
   
   ggsave(here("diagnostics", paste0("acf_", model_label, ".pdf")), plot = p, width = 10, height = 8, dpi = 320)
+  
+  if (!is.null(tif_file)) {
+    write_tif(here("diagnostics", tif_file), function() print(p), dpi = tif_dpi)
+  }
   message("Saved ACF plot for: ", model_label)
 }
 

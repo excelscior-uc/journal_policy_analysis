@@ -372,7 +372,9 @@ p_policy_timeline <- ggplot(policy_patterns, aes(y = pattern_id)) +
 p_policy_timeline
 
 # Save plot
-ggsave(here("results", "policy_timeline_plot.png"), p_policy_timeline, width = 9, height = 6, dpi = 300)
+#ggsave(here("results", "policy_timeline_plot.png"), p_policy_timeline, width = 9, height = 6, dpi = 300)
+ggsave(here("results", "Fig2.tif"), plot = p_policy_timeline, width = 9, 
+       height = 6, units = "in",  dpi = 600, device = "tif", compression = "lzw")
 
 
 # ------------------------------------------------------
@@ -510,7 +512,9 @@ stacked_by_field <- ggplot() +
 stacked_by_field
 
 # Save plot
-ggsave(here("results", "stacked_by_field.png"), stacked_by_field, width = 10, height = 5, dpi = 300)
+#ggsave(here("results", "stacked_by_field.png"), stacked_by_field, width = 10, height = 5, dpi = 300)
+ggsave(here("results", "Fig3.tif"),  stacked_by_field, width = 10, height = 5, 
+       dpi = 300, device = "tiff", compression = "lzw")
 
 
 # ---------------
@@ -687,5 +691,9 @@ nonpolicy_plot <- make_trend_plot(
 nonpolicy_plot
 
 # Save plots
-ggsave(here("results", "policy_by_year.png"), policy_plot, width = 14, height = 12, dpi = 300)
-ggsave(here("results", "nonpolicy_by_year.png"), nonpolicy_plot, width = 14, height = 10, dpi = 300)
+#ggsave(here("results", "policy_by_year.png"), policy_plot, width = 14, height = 12, dpi = 300)
+#ggsave(here("results", "nonpolicy_by_year.png"), nonpolicy_plot, width = 14, height = 10, dpi = 300)
+ggsave(here("results", "Fig4.tif"), policy_plot, width = 14, height = 12, 
+       dpi = 300, device = "tiff", compression = "lzw")
+ggsave(here("results", "Fig5.tif"), nonpolicy_plot,  width = 14, height = 10, 
+       dpi = 300, device = "tiff", compression = "lzw")
