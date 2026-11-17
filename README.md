@@ -1,12 +1,56 @@
 ## Do journal policies reduce the use of bar graphs for visualizing continuous data? An observational study
 
-Robert Schulz<sup>1</sup>, Teshome K. Deressa<sup>2,3</sup>, Adrian Barnett<sup>4</sup>, Yazid Zalia<sup>1</sup>, Teresa Cunha-Oliveira<sup>2,3</sup>, Camila Victoria-Quilla Baselly Heibrich<sup>1</sup>, Parya Abbasi<sup>1,5</sup>, Vladislav Nachev<sup>1</sup>, Tracey L. Weissgerber<sup>2,3</sup>
+Teshome K. Deressa<sup>1,2</sup> <a href="https://orcid.org/0000-0003-1351-1849"><img src="https://orcid.org/assets/vectors/orcid.logo.icon.svg" width="14" height="14" alt="ORCID"></a>,
+Yazid Zalai<sup>3</sup> <a href="https://orcid.org/0009-0006-0550-5974"><img src="https://orcid.org/assets/vectors/orcid.logo.icon.svg" width="14" height="14" alt="ORCID"></a>,
+Adrian Barnett<sup>4</sup> <a href="https://orcid.org/0000-0001-6339-0374"><img src="https://orcid.org/assets/vectors/orcid.logo.icon.svg" width="14" height="14" alt="ORCID"></a>,
+Camila Victoria-Quilla Baselly Heibrich<sup>3</sup>,
+Robert Schulz<sup>3</sup> <a href="https://orcid.org/0000-0002-4830-309X"><img src="https://orcid.org/assets/vectors/orcid.logo.icon.svg" width="14" height="14" alt="ORCID"></a>,
+Teresa Cunha-Oliveira<sup>1,2</sup> <a href="https://orcid.org/0000-0002-7382-0339"><img src="https://orcid.org/assets/vectors/orcid.logo.icon.svg" width="14" height="14" alt="ORCID"></a>,
+Parya Abbasi<sup>3,5</sup>,
+Tracey L. Weissgerber<sup>1,2,3</sup> <a href="https://orcid.org/0000-0002-7490-2600"><img src="https://orcid.org/assets/vectors/orcid.logo.icon.svg" width="14" height="14" alt="ORCID"></a>,
+Vladislav Nachev<sup>3</sup> <a href="https://orcid.org/0000-0003-0521-6153"><img src="https://orcid.org/assets/vectors/orcid.logo.icon.svg" width="14" height="14" alt="ORCID"></a>
 
-<sup>1</sup> *QUEST Center for Responsible Research, Berlin Institute of Health at Charité – Universitätsmedizin Berlin, Berlin, Germany*<br>
-<sup>2</sup> *CIBB, Center for Innovative Biomedicine and Biotechnology, University of Coimbra, Coimbra, Portugal*<br>
-<sup>3</sup> *CNC-UC, Center for Neuroscience and Cell Biology, University of Coimbra, Coimbra, Portugal*<br>
+<br>
+
+<sup>1</sup> *CIBB, Center for Innovative Biomedicine and Biotechnology, University of Coimbra, Coimbra, Portugal*<br>
+<sup>2</sup> *CNC-UC, Center for Neuroscience and Cell Biology, University of Coimbra, Coimbra, Portugal*<br>
+<sup>3</sup> *QUEST Center for Responsible Research, Berlin Institute of Health at Charité – Universitätsmedizin Berlin, Berlin, Germany*<br>
 <sup>4</sup> *Australian Centre for Health Services Innovation and Centre for Healthcare Transformation, School of Public Health and Social Work, Faculty of Health, Queensland University of Technology, Brisbane, QLD, Australia*<br>
 <sup>5</sup> *SYNLAB MVZ Berlin GmbH, Berlin, Germany*
+
+#### Contributions
+
+<table>
+<tr>
+<td align="left" valign="top">
+
+**Data managers (2)**
+
+- Teshome K. Deressa
+- Vladislav Nachev
+
+</td>
+<td align="left" valign="top">
+
+**Data collectors (5)**
+
+- Yazid Zalai
+- Camila&nbsp;Victoria&#8209;Quilla&nbsp;Baselly&nbsp;Heibrich
+- Robert Schulz
+- Teresa Cunha-Oliveira
+- Parya Abbasi
+
+</td>
+<td align="left" valign="top">
+
+**Supervisors (2)**
+
+- Adrian Barnett
+- Tracey L. Weissgerber
+
+</td>
+</tr>
+</table>
 
 ---
 - **Interactive dashboard:** [View the dashboard](https://excelscior-uc.github.io/journal-policy-dashboard/)
