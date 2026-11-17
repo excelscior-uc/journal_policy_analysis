@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "Please cite this research code as follows."
-title: "Did journal policies reduce the use of bar graphs for visualizing continuous data? An observational study: Code and data"
+title: "Did journal policies reduce the use of bar graphs for visualizing continuous data? An observational study (code and data)"
 authors:
   - family-names: "Deressa"
     given-names: "Teshome K."
