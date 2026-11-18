@@ -104,12 +104,12 @@ Code and supplementary information for an observational study evaluating whether
 
 | Script | Purpose |
 |:---|:---|
-| `99_functions.R` | Shared helper functions: model fitting, posterior summaries, MCMC diagnostics, and outcome-specific DIC functions (`compute_dic_bar()` / `compute_dic_info()`, `build_dic_bar_table()` / `build_dic_info_table()`). |
-| `2__descriptives.R` | Descriptive summary tables and exploratory figures. |
-| `3__models.R` | Fits the seven candidate Bayesian Poisson models for `n_bar`. |
-| `4__results.R` | Posterior summary tables (with ESS and R-hat) and the forest plot. |
-| `5__diagnostics.R` | MCMC diagnostics (trace, density, ACF), DIC per model, and the DIC comparison table for `n_bar`. |
-| `6__sensitivity.R` | Refits all seven models for `n_info`, runs their summaries, diagnostics, DIC table and forest plot, and builds the cumulative rate-ratio plot. |
+| `99_functions.R` | Shared helper functions: model fitting, posterior summaries, MCMC diagnostics, and outcome-specific DIC functions (`compute_dic_bar()` / `compute_dic_info()`, `build_dic_bar_table()` / `build_dic_info_table()`) |
+| `2__descriptives.R` | Descriptive summary tables and exploratory figures |
+| `3__models.R` | Fits the seven candidate Bayesian Poisson models for `n_bar` |
+| `4__results.R` | Posterior summary tables (with ESS and R-hat) and the forest plot |
+| `5__diagnostics.R` | MCMC diagnostics (trace, density, ACF), DIC per model, and the DIC comparison table for `n_bar` |
+| `6__sensitivity.R` | Refits all seven models for `n_info`, runs their summaries, diagnostics, DIC table and forest plot, and builds the cumulative rate-ratio plot |
 
 **Run order:** 2 → 3 → 5 → 4 → 6. The forest plot in script 4 reads `results/dic_comparison_bar.csv`, which script 5 writes, so run script 5 first (or rerun script 4 afterwards). Script 6 is self-contained for the secondary outcome, so there is no need to loop back through scripts 4 and 5. `sample_size.R` is the sample size calculation from the preregistered report (see [Script reference](#sample_sizer)) and is not part of this run order.
 
